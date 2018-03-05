@@ -8,6 +8,16 @@ public class GrupoProduto {
     private String GrupoProdut;
     private TipoProduto tipoProduto;
 
+    public GrupoProduto(Integer idGrupoPruduto, String GrupoProdut, TipoProduto tipoProduto) {
+        this.idGrupoPruduto = idGrupoPruduto;
+        this.GrupoProdut = GrupoProdut;
+        this.tipoProduto = tipoProduto;
+    }
+
+    public GrupoProduto() {
+    }
+    
+    
     public Integer getIdGrupoPruduto() {
         return idGrupoPruduto;
     }
