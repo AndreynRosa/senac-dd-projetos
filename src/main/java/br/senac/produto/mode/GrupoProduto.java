@@ -1,6 +1,8 @@
 
 package br.senac.produto.mode;
 
+import java.util.Objects;
+
 
 public class GrupoProduto {
     
@@ -14,6 +16,34 @@ public class GrupoProduto {
         this.tipoProduto = tipoProduto;
     }
 
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 23 * hash + Objects.hashCode(this.idGrupoPruduto);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final GrupoProduto other = (GrupoProduto) obj;
+        if (!Objects.equals(this.idGrupoPruduto, other.idGrupoPruduto)) {
+            return false;
+        }
+        return true;
+    }
+    
+   
+    
+    
     public GrupoProduto() {
     }
     
