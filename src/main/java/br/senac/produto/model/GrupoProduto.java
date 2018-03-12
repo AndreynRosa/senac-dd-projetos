@@ -1,5 +1,5 @@
 
-package br.senac.produto.mode;
+package br.senac.produto.model;
 
 import java.util.Objects;
 
@@ -48,19 +48,19 @@ public class GrupoProduto {
     }
     
     
-    public Integer getIdGrupoPruduto() {
+    public Integer getIdGrupoProduto() {
         return idGrupoPruduto;
     }
 
-    public void setIdGrupoPruduto(Integer idGrupoPruduto) {
+    public void setIdGrupoProduto(Integer idGrupoPruduto) {
         this.idGrupoPruduto = idGrupoPruduto;
     }
 
-    public String getNomeGrupoProdut() {
+    public String getNomeGrupoProduto() {
         return nomeGrupoProdut;
     }
 
-    public void setNomeGrupoProdut(String GrupoProdut) {
+    public void setNomeGrupoProduto(String GrupoProdut) {
         this.nomeGrupoProdut = GrupoProdut;
     }
 
@@ -71,5 +71,7 @@ public class GrupoProduto {
     public void setTipoProduto(TipoProduto tipoProduto) {
         this.tipoProduto = tipoProduto;
     }
+
+   
     
 }

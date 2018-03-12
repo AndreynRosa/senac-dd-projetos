@@ -1,5 +1,5 @@
 
-package br.senac.produto.mode;
+package br.senac.produto.model;
 import java.util.Date;
 
 public abstract class Produto {

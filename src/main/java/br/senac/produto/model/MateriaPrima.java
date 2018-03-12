@@ -1,5 +1,5 @@
 
-package br.senac.produto.mode;
+package br.senac.produto.model;
 
 
 public class MateriaPrima {
