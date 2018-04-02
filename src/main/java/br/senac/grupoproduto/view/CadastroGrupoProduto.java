@@ -8,10 +8,12 @@ package br.senac.grupoproduto.view;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
 /**
@@ -28,13 +30,13 @@ public class CadastroGrupoProduto extends JDialog {
 
     public CadastroGrupoProduto() {
         setTitle("Cadastro Grupo Produto");
-        setSize(500, 250);
+        setSize(600, 250);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
         JButton btnGravar = new JButton("Salvar");//botão de baixo
         btnGravar.setSize(new Dimension(80, 30));
-        btnGravar.setLocation(360, 160);
+        btnGravar.setLocation(360, 40);
 
         setLayout(new BorderLayout());//footer
         JPanel pnBtns = new JPanel();
@@ -49,14 +51,30 @@ public class CadastroGrupoProduto extends JDialog {
 
         JLabel lblCodigo = new JLabel("Codigo");//codigo
         JTextField txtCodigo = new JTextField();
-
+        
         JLabel lblNome = new JLabel("Nome");//nome
         JTextField txtNome = new JTextField();
-
+        
         JLabel lblTipo = new JLabel("Tipo");//tipo
-
+        JRadioButton btnServ = new JRadioButton("Serviço");
+        JRadioButton btnMerc = new JRadioButton("Mercadoria");
+        JRadioButton btnMateria = new JRadioButton("MateriaPrima");
+        ButtonGroup opt = new ButtonGroup();
+        opt.add(btnServ);
+        opt.add(btnMerc);
+        opt.add(btnMateria);
+        JPanel opt1 = new JPanel();
+        opt1.add(btnServ);
+        opt1.add(btnMerc);
+        opt1.add(btnMateria);      
+        
         centerPn.add(lblCodigo);
         centerPn.add(txtCodigo);
+        centerPn.add(lblNome);
+        centerPn.add(txtNome);
+        centerPn.add(lblTipo);
+        centerPn.add(opt1);
+      
         add(centerPn, BorderLayout.CENTER);
     }
 }

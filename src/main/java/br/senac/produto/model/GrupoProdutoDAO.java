@@ -14,6 +14,7 @@ import java.util.List;
 public class GrupoProdutoDAO implements  BaseDAO<GrupoProduto, Integer>{
     
       private static ArrayList<GrupoProduto> listaGrupoProduto = new ArrayList<>();
+      
     
        public GrupoProdutoDAO() { //construtor
 	if(listaGrupoProduto.size() > 0)
@@ -134,5 +135,17 @@ public class GrupoProdutoDAO implements  BaseDAO<GrupoProduto, Integer>{
          
          return map;
      }
+     
+     public GrupoProduto getGrupoProdutoPorId(Integer idGrupoProduto){
+         for(GrupoProduto idProd: listaGrupoProduto){
+          if (idProd.getIdGrupoProduto()==(idGrupoProduto)){  
+              return idProd;
+          } 
+         }        
+         return null;
+     }
+     
 }
+
+    
      
