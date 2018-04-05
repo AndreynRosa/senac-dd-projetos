@@ -138,7 +138,7 @@ public class GrupoProdutoDAO implements  BaseDAO<GrupoProduto, Integer>{
      
      public GrupoProduto getGrupoProdutoPorId(Integer idGrupoProduto){
          for(GrupoProduto idProd: listaGrupoProduto){
-          if (idProd.getIdGrupoProduto()==(idGrupoProduto)){  
+          if (idProd.getIdGrupoProduto().equals(idGrupoProduto)){  
               return idProd;
           } 
          }        
