@@ -5,6 +5,13 @@
  */
 package br.senac.grupoproduto.view;
 
+import br.senac.produto.model.GrupoProduto;
+import br.senac.produto.model.GrupoProdutoDAO;
+import br.senac.produto.model.TableModel;
+import java.util.ArrayList;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author andre
@@ -14,8 +21,11 @@ public class ConsultaGrupoProduto extends javax.swing.JFrame {
     /**
      * Creates new form ConsultaGrupoProduto
      */
+     
+    CadastroGrupoProduto cadGrup = new CadastroGrupoProduto();
     public ConsultaGrupoProduto() {
         initComponents();
+        buscarTB();
     }
 
     /**
@@ -27,18 +37,71 @@ public class ConsultaGrupoProduto extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
-        jPanel1 = new javax.swing.JPanel();
-        jToolBar1 = new javax.swing.JToolBar();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
         jScrollBar1 = new javax.swing.JScrollBar();
+        jPasswordField1 = new javax.swing.JPasswordField();
+        lblID = new javax.swing.JPanel();
+        jToolBar1 = new javax.swing.JToolBar();
+        bntNovoCad = new javax.swing.JButton();
+        btnAlterar = new javax.swing.JButton();
+        btnExcluir = new javax.swing.JButton();
+        btnBuscar = new javax.swing.JButton();
+        txtField = new javax.swing.JTextField();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tabelaProd = new javax.swing.JTable();
+        fieldNome = new javax.swing.JTextField();
+        fieldTipProd = new javax.swing.JTextField();
+        fieldID = new javax.swing.JTextField();
+        lblNome = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+
+        jPasswordField1.setText("jPasswordField1");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        jToolBar1.setRollover(true);
+
+        bntNovoCad.setText("Novo");
+        bntNovoCad.setFocusable(false);
+        bntNovoCad.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        bntNovoCad.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        bntNovoCad.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bntNovoCadActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(bntNovoCad);
+
+        btnAlterar.setText("Alterar");
+        btnAlterar.setFocusable(false);
+        btnAlterar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnAlterar.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnAlterar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAlterarActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(btnAlterar);
+
+        btnExcluir.setText("Excluir");
+        btnExcluir.setFocusable(false);
+        btnExcluir.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnExcluir.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnExcluir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnExcluirActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(btnExcluir);
+
+        btnBuscar.setText("Buscar");
+        btnBuscar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBuscarActionPerformed(evt);
+            }
+        });
+
+        tabelaProd.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null},
                 {null, null, null},
@@ -46,65 +109,146 @@ public class ConsultaGrupoProduto extends javax.swing.JFrame {
                 {null, null, null}
             },
             new String [] {
-                "CodigoProduto", "Nome", "Tipo"
+                "CodigoProduto", "Descrição", "Tipo Produto"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(tabelaProd);
 
-        getContentPane().add(jScrollPane1, java.awt.BorderLayout.CENTER);
-
-        jToolBar1.setRollover(true);
-
-        jButton1.setText("Novo");
-        jButton1.setFocusable(false);
-        jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        fieldNome.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                fieldNomeActionPerformed(evt);
             }
         });
-        jToolBar1.add(jButton1);
 
-        jButton2.setText("Alterar");
-        jButton2.setFocusable(false);
-        jButton2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar1.add(jButton2);
+        fieldTipProd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                fieldTipProdActionPerformed(evt);
+            }
+        });
 
-        jButton3.setText("Excluir");
-        jButton3.setFocusable(false);
-        jButton3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton3.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar1.add(jButton3);
+        lblNome.setText("Descrição");
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
+        jLabel2.setText("Tipo Prod");
+
+        jLabel3.setText("ID");
+
+        javax.swing.GroupLayout lblIDLayout = new javax.swing.GroupLayout(lblID);
+        lblID.setLayout(lblIDLayout);
+        lblIDLayout.setHorizontalGroup(
+            lblIDLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(lblIDLayout.createSequentialGroup()
+                .addGroup(lblIDLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnBuscar)
+                    .addGroup(lblIDLayout.createSequentialGroup()
+                        .addGap(24, 24, 24)
+                        .addGroup(lblIDLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblNome)
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING))))
+                .addGap(18, 18, 18)
+                .addGroup(lblIDLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtField, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(fieldID, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(lblIDLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(fieldTipProd, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
+                        .addComponent(fieldNome, javax.swing.GroupLayout.Alignment.LEADING)))
+                .addContainerGap(310, Short.MAX_VALUE))
+            .addGroup(lblIDLayout.createSequentialGroup()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 539, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        lblIDLayout.setVerticalGroup(
+            lblIDLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(lblIDLayout.createSequentialGroup()
                 .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 75, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(lblIDLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnBuscar)
+                    .addComponent(txtField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(lblIDLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(fieldID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3))
+                .addGap(18, 18, 18)
+                .addGroup(lblIDLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblNome)
+                    .addComponent(fieldNome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(14, 14, 14)
+                .addGroup(lblIDLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(fieldTipProd, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 266, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 62, Short.MAX_VALUE))
         );
 
-        getContentPane().add(jPanel1, java.awt.BorderLayout.PAGE_START);
-        getContentPane().add(jScrollBar1, java.awt.BorderLayout.LINE_END);
+        getContentPane().add(lblID, java.awt.BorderLayout.PAGE_START);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void fieldTipProdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fieldTipProdActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_fieldTipProdActionPerformed
+    private GrupoProdutoDAO grupProdDAO = new GrupoProdutoDAO();// variavel
+    private void btnExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirActionPerformed
+        Integer indexRow = tabelaProd.getSelectedRow();
+       if(indexRow == -1)
+           JOptionPane.showMessageDialog(this, "Selecione uma registro da tabela","Anteção",JOptionPane.WARNING_MESSAGE);
+       else{
+          Integer idGrupPord = (Integer)tabelaProd.getModel().getValueAt(indexRow, 0); 
+          int pergunta = JOptionPane.showConfirmDialog(this, "Confirma Exclusão","Exclusão!!!",JOptionPane.YES_OPTION);
+          if (pergunta == JOptionPane.YES_OPTION)
+             grupProdDAO = new GrupoProdutoDAO();
+             grupProdDAO.excluir(idGrupPord);
+        }
+           buscarTB();
+    }//GEN-LAST:event_btnExcluirActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
+    private void btnAlterarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAlterarActionPerformed
+       Integer indexRow = tabelaProd.getSelectedRow();
+       if(indexRow == -1)
+           JOptionPane.showMessageDialog(this, "Selecione uma registro da tabela","Anteção",JOptionPane.WARNING_MESSAGE);
+       else{
+           Integer idGrupPord = (Integer)tabelaProd.getModel().getValueAt(indexRow, 0);    
+           cadGrup.setVisible(true);
+           cadGrup.editar(idGrupPord);
+           buscarTB();
+       }
+        buscarTB();
+    }//GEN-LAST:event_btnAlterarActionPerformed
+
+    private void bntNovoCadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bntNovoCadActionPerformed
+        
+        cadGrup.setVisible(true);
+         buscarTB();// metodo do TableModel
+         
+    }//GEN-LAST:event_bntNovoCadActionPerformed
+
+    private void fieldNomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fieldNomeActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_fieldNomeActionPerformed
+
+    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
+            buscarTB();
+    }//GEN-LAST:event_btnBuscarActionPerformed
+
+   
+    
+    
+    public void buscarTB(){
+        DefaultTableModel model = (DefaultTableModel) tabelaProd.getModel();
+            model.setRowCount(0);
+            for(GrupoProduto grupProd: grupProdDAO.listarPorNome(txtField.getText())) {
+                Object[] row = new Object[3];
+                row[0] = grupProd.getIdGrupoProduto();
+                row[1   ] = grupProd.getNomeGrupoProduto();
+                row[2] = grupProd.getTipoProduto();
+                model.addRow(row); 
+            }  
+    }
+ static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -130,6 +274,7 @@ public class ConsultaGrupoProduto extends javax.swing.JFrame {
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 new ConsultaGrupoProduto().setVisible(true);
             }
@@ -137,13 +282,29 @@ public class ConsultaGrupoProduto extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JPanel jPanel1;
+    private javax.swing.JButton bntNovoCad;
+    private javax.swing.JButton btnAlterar;
+    private javax.swing.JButton btnBuscar;
+    private javax.swing.JButton btnExcluir;
+    private javax.swing.JTextField fieldID;
+    private javax.swing.JTextField fieldNome;
+    private javax.swing.JTextField fieldTipProd;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JPasswordField jPasswordField1;
     private javax.swing.JScrollBar jScrollBar1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
     private javax.swing.JToolBar jToolBar1;
+    private javax.swing.JPanel lblID;
+    private javax.swing.JLabel lblNome;
+    private javax.swing.JTable tabelaProd;
+    private javax.swing.JTextField txtField;
     // End of variables declaration//GEN-END:variables
-}
+    
+    
+    
+    
+  
+     
+    }
+

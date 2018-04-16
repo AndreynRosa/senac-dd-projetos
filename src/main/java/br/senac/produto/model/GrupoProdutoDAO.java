@@ -97,17 +97,7 @@ public class GrupoProdutoDAO implements  BaseDAO<GrupoProduto, Integer>{
          if(grupoProd.getNomeGrupoProduto().toLowerCase().contains(nome.toLowerCase()))  {
              listaNome.add(grupoProd);
          }
-         Collections.sort(listaNome, new Comparator<GrupoProduto>() {
-             @Override
-             public int compare(GrupoProduto o1, GrupoProduto o2) {
-              int compareStr = o1.getNomeGrupoProduto().compareTo(o2.getNomeGrupoProduto());
-              if(compareStr == 0){
-                  compareStr = o1.getIdGrupoProduto().compareTo(o2.getIdGrupoProduto());
-              }
-              return compareStr;
-             }
-         });
-       }
+        }
        return listaNome;
     }
      public List<GrupoProduto> listarPorTipo(TipoProduto tipoProduto,String nome){
@@ -143,6 +133,9 @@ public class GrupoProdutoDAO implements  BaseDAO<GrupoProduto, Integer>{
           } 
          }        
          return null;
+     }
+     public ArrayList<GrupoProduto> getGrupoProdArrayList(){
+         return listaGrupoProduto;
      }
     
    

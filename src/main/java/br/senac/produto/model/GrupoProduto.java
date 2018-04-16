@@ -7,12 +7,12 @@ import java.util.Objects;
 public class GrupoProduto {
     
     private Integer idGrupoPruduto;
-    private String nomeGrupoProdut;
+    private String nomeGrupoProduto;
     private TipoProduto tipoProduto;
 
     public GrupoProduto(Integer idGrupoPruduto, String GrupoProdut, TipoProduto tipoProduto) {
         this.idGrupoPruduto = idGrupoPruduto;
-        this.nomeGrupoProdut = GrupoProdut;
+        this.nomeGrupoProduto = GrupoProdut;
         this.tipoProduto = tipoProduto;
     }
 
@@ -57,11 +57,11 @@ public class GrupoProduto {
     }
 
     public String getNomeGrupoProduto() {
-        return nomeGrupoProdut;
+        return nomeGrupoProduto;
     }
 
     public void setNomeGrupoProduto(String GrupoProdut) {
-        this.nomeGrupoProdut = GrupoProdut;
+        this.nomeGrupoProduto = GrupoProdut;
     }
 
     public TipoProduto getTipoProduto() {
@@ -70,6 +70,11 @@ public class GrupoProduto {
 
     public void setTipoProduto(TipoProduto tipoProduto) {
         this.tipoProduto = tipoProduto;
+    }
+
+    @Override
+    public String toString() {
+        return  nomeGrupoProduto ;
     }
 
    

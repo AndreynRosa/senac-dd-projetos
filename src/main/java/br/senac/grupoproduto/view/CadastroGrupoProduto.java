@@ -169,6 +169,7 @@ public class CadastroGrupoProduto extends JDialog {
 
                 JOptionPane.showMessageDialog(this, "Alterado com sucesso");        
      }
+        
     }
 
 }
