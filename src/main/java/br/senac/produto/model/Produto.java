@@ -4,7 +4,7 @@ import java.util.Date;
 
 public abstract class Produto {
     
-    Long idProduto;
+    private Long idProduto;
     private String nomeProduto;
     private String descicao;
     private Date dataCriacao;
