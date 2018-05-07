@@ -11,6 +11,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -27,6 +28,18 @@ public class GrupoProdutoJDBCDAO  implements BaseDAO<GrupoProduto, Integer> {
      
     public Integer inserir(GrupoProduto grupoProduto) {
         Integer pk = 0;
+        String sqlInsert = "INSERT INTO GRUPOPRODUTO"
+                + "(NOMEGRUPOPRODUTO, TIPO, DATAINCLUSAO, PERCDESCONTO)"
+                + "VALUE (";
+        sqlInsert +="'"+grupoProduto.getNomeGrupoProduto()+"', ";
+        if(grupoProduto.getTipoProduto()== null)
+            throw new RuntimeException("Tipo grupo não pode ser nulo");
+        else
+            sqlInsert += grupoProduto.getTipoProduto().getId() + ",";
+        SimpleDateFormat sdf = new SimpleDateFormat("yyy-MM-dd:mm:ss");
+        sqlInsert +="(ts' "+sdf.format(grupoProduto.getDataInsclusao()) + "'),";
+        sqlInsert += grupoProduto.getPercDesconto() + ")";
+        System.out.println(sqlInsert);
         return pk;
     }
 
@@ -50,14 +63,40 @@ public class GrupoProdutoJDBCDAO  implements BaseDAO<GrupoProduto, Integer> {
         if(rs.next()==false){
             throw new RuntimeException("Registro não encontrado");
         }
+        return getGrupoPorduto(rs);
+         
+    }
+        
+        //getGrupoProduto
+     public GrupoProduto getGrupoPorduto(ResultSet rs) throws SQLException {
         GrupoProduto gp = new GrupoProduto();
         gp.setNomeGrupoProduto(rs.getString("nomeGrupoProduto"));
-        
-        
+        gp.setIdGrupoProduto(rs.getInt("idgrupoproduto"));
+       
+        switch (rs.getInt("tipo")) {
+
+            case 1:
+                gp.setTipoProduto(TipoProduto.MERCADORIA);
+                break;
+
+            case 2:
+                gp.setTipoProduto(TipoProduto.SERVICO);
+                break;
+
+            case 3:
+                gp.setTipoProduto(TipoProduto.MATERIA_PRIMA);
+                break;
+        }
+
+        gp.setDataInsclusao(rs.getDate("dataInclusao"));
+        gp.setDataExclusao(rs.getDate("dataExclusao"));
+
         return gp;
-        
-        
     }
+
+        
+        
+    
 
     /**
      * Faça um foreach na lista e para os grupos de contiverem apenas parte da string do nome passada como parâmetro,

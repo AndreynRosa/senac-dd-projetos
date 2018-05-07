@@ -1,6 +1,7 @@
 
 package br.senac.produto.model;
 
+import java.util.Date;
 import java.util.Objects;
 
 
@@ -9,6 +10,33 @@ public class GrupoProduto {
     private Integer idGrupoPruduto;
     private String nomeGrupoProduto;
     private TipoProduto tipoProduto;
+    private Date dataInsclusao;
+    private Date dataExclusao;
+
+    public Date getDataInsclusao() {
+        return dataInsclusao;
+    }
+
+    public void setDataInsclusao(Date dataInsclusao) {
+        this.dataInsclusao = dataInsclusao;
+    }
+
+    public Date getDataExclusao() {
+        return dataExclusao;
+    }
+
+    public void setDataExclusao(Date dataExclusao) {
+        this.dataExclusao = dataExclusao;
+    }
+
+    public Float getPercDesconto() {
+        return percDesconto;
+    }
+
+    public void setPercDesconto(Float percDesconto) {
+        this.percDesconto = percDesconto;
+    }
+    private Float percDesconto;
 
     public GrupoProduto(Integer idGrupoPruduto, String GrupoProdut, TipoProduto tipoProduto) {
         this.idGrupoPruduto = idGrupoPruduto;
