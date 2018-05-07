@@ -37,7 +37,7 @@ public class GrupoProdutoJDBCDAO  implements BaseDAO<GrupoProduto, Integer> {
         else
             sqlInsert += grupoProduto.getTipoProduto().getId() + ",";
         SimpleDateFormat sdf = new SimpleDateFormat("yyy-MM-dd:mm:ss");
-        sqlInsert +="(ts' "+sdf.format(grupoProduto.getDataInsclusao()) + "'),";
+        sqlInsert +="{ts' "+sdf.format(grupoProduto.getDataInsclusao()) + "'},";
         sqlInsert += grupoProduto.getPercDesconto() + ")";
         System.out.println(sqlInsert);
         return pk;
