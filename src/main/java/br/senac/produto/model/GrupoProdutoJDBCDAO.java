@@ -5,16 +5,16 @@
  */
 package br.senac.produto.model;
 
+import br.senac.componentes.SQLUtil.UtilSQL;
 import br.senac.componentes.db.ConexaoDB;
 import br.senac.grupoproduto.model.BaseDAO;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -28,22 +28,26 @@ public class GrupoProdutoJDBCDAO  implements BaseDAO<GrupoProduto, Integer> {
      
     public Integer inserir(GrupoProduto grupoProduto) {
         Integer pk = 0;
+        grupoProduto.setDataInsclusao(new Date());
         String sqlInsert = "INSERT INTO GRUPOPRODUTO"
                 + "(NOMEGRUPOPRODUTO, TIPO, DATAINCLUSAO, PERCDESCONTO)"
-                + "VALUE (";
+                + "VALUES (";
         sqlInsert +="'"+grupoProduto.getNomeGrupoProduto()+"', ";
         if(grupoProduto.getTipoProduto()== null)
             throw new RuntimeException("Tipo grupo não pode ser nulo");
         else
-            sqlInsert += grupoProduto.getTipoProduto().getId() + ",";
-        SimpleDateFormat sdf = new SimpleDateFormat("yyy-MM-dd:mm:ss");
-        sqlInsert +="{ts' "+sdf.format(grupoProduto.getDataInsclusao()) + "'},";
+           sqlInsert += grupoProduto.getTipoProduto().getId() + ",";
+        
+       
+       
+        sqlInsert +=UtilSQL.getDataTempoToSQL(grupoProduto.getDataInsclusao()) +",";
         sqlInsert += grupoProduto.getPercDesconto() + ")";
         System.out.println(sqlInsert);
         return pk;
     }
 
     public boolean alterar(GrupoProduto grupoProduto) {
+        String sqlAlterar;
         return false;
     }
 
