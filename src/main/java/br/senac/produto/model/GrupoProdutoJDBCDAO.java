@@ -23,36 +23,71 @@ import java.util.List;
 
 public class GrupoProdutoJDBCDAO  implements BaseDAO<GrupoProduto, Integer> {
      public GrupoProdutoJDBCDAO() {
+     
      }
 
      
-    public Integer inserir(GrupoProduto grupoProduto) {
+    public Integer inserir(GrupoProduto grupoProduto) throws SQLException {
         Integer pk = 0;
         grupoProduto.setDataInsclusao(new Date());
         String sqlInsert = "INSERT INTO GRUPOPRODUTO"
                 + "(NOMEGRUPOPRODUTO, TIPO, DATAINCLUSAO, PERCDESCONTO)"
                 + "VALUES (";
         sqlInsert +="'"+grupoProduto.getNomeGrupoProduto()+"', ";
+        
+        
         if(grupoProduto.getTipoProduto()== null)
             throw new RuntimeException("Tipo grupo não pode ser nulo");
         else
            sqlInsert += grupoProduto.getTipoProduto().getId() + ",";
         
-       
-       
         sqlInsert +=UtilSQL.getDataTempoToSQL(grupoProduto.getDataInsclusao()) +",";
         sqlInsert += grupoProduto.getPercDesconto() + ")";
         System.out.println(sqlInsert);
-        return pk;
+        Connection conn = ConexaoDB.getInstance().getConnection();
+        Statement stm = conn.createStatement();
+        
+        int regCriados = stm.executeUpdate(sqlInsert, 
+                                            Statement.RETURN_GENERATED_KEYS);
+        ResultSet rsPK = stm.getGeneratedKeys();   //Obter PK gerada
+        if (rsPK.next()) {
+              pk = rsPK.getInt(1);
+              return pk;
+        }
+        throw new RuntimeException("Erro inesperado ao incluir grupo produto!");
     }
 
-    public boolean alterar(GrupoProduto grupoProduto) {
-        String sqlAlterar;
-        return false;
+    public boolean alterar(GrupoProduto grupoProduto) throws SQLException {
+      String sqlAlterar = "UPDATE GRUPOPRODUTO SET"
+              + "nomeGRUPOPRODUTO ='"+grupoProduto.getNomeGrupoProduto()+"',"
+              + "tipo = "+grupoProduto.getTipoProduto().getId()+","
+              + "percDesconto ="+grupoProduto.getPercDesconto()+" "
+              + "WHERE IDGRUPOPRODUTO ="+grupoProduto.getIdGrupoProduto();
+                
+       Connection conn = ConexaoDB.getInstance().getConnection();
+        Statement stm = conn.createStatement();
+        int regAlterados = stm.executeUpdate(sqlAlterar);
+        return (regAlterados == 1);
+       
     }
 
-    public boolean excluir(Integer id) {
-        return false;
+    public boolean excluir(Integer id) throws SQLException {
+          String sqlExcluir = "DELETE FROM GRUPO GRUPOPRODUTO"
+                + "WERE IDGRUPOPRODUTO ="+id;
+           Connection conn = ConexaoDB.getInstance().getConnection();
+           
+           try{
+             Statement stm = conn.createStatement();  
+             int regAfetados = stm.executeUpdate(sqlExcluir);
+             return(regAfetados == 1);
+           }catch(SQLException e){
+             String sqlAtualizar = "UPDATE GRUPOPRODUTO SET dataExclusao "
+                     + "= CURDATE() WHERE IDGRUPOPRODUTO ="+id;
+             Statement stm = conn.createStatement();  
+             int regAfetados = stm.executeUpdate(sqlAtualizar);
+             return (regAfetados == 1);
+           }
+           
     }
     
     @Override
