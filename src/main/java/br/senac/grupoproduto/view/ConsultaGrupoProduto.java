@@ -7,8 +7,11 @@ package br.senac.grupoproduto.view;
 
 import br.senac.produto.model.GrupoProduto;
 import br.senac.produto.model.GrupoProdutoDAO;
+import java.sql.SQLException;
 
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -197,11 +200,16 @@ public class ConsultaGrupoProduto extends javax.swing.JFrame {
        if(indexRow == -1)
            JOptionPane.showMessageDialog(this, "Selecione uma registro da tabela","Anteção",JOptionPane.WARNING_MESSAGE);
        else{
-          Integer idGrupPord = (Integer)tabelaProd.getModel().getValueAt(indexRow, 0); 
-          int pergunta = JOptionPane.showConfirmDialog(this, "Confirma Exclusão","Exclusão!!!",JOptionPane.YES_OPTION);
-          if (pergunta == JOptionPane.YES_OPTION)
-             grupProdDAO = new GrupoProdutoDAO();
-             grupProdDAO.excluir(idGrupPord);
+            try {
+                Integer idGrupPord = (Integer)tabelaProd.getModel().getValueAt(indexRow, 0);
+                int pergunta = JOptionPane.showConfirmDialog(this, "Confirma Exclusão","Exclusão!!!",JOptionPane.YES_OPTION);
+                if (pergunta == JOptionPane.YES_OPTION)
+                    grupProdDAO = new GrupoProdutoDAO();
+                grupProdDAO.excluir(idGrupPord);
+            } catch (SQLException ex) {
+                Logger.getLogger(ConsultaGrupoProduto.class.getName()).log(Level.SEVERE, null, ex);
+                JOptionPane.showMessageDialog(this, ex, "Erro na exclusão", JOptionPane.WARNING_MESSAGE);
+            }
         }
            buscarTB();
     }//GEN-LAST:event_btnExcluirActionPerformed
@@ -211,10 +219,15 @@ public class ConsultaGrupoProduto extends javax.swing.JFrame {
        if(indexRow == -1)
            JOptionPane.showMessageDialog(this, "Selecione uma registro da tabela","Anteção",JOptionPane.WARNING_MESSAGE);
        else{
-           Integer idGrupPord = (Integer)tabelaProd.getModel().getValueAt(indexRow, 0);    
-           cadGrup.setVisible(true);
-           cadGrup.editar(idGrupPord);
-           buscarTB();
+           try {
+               Integer idGrupPord = (Integer)tabelaProd.getModel().getValueAt(indexRow, 0);
+               cadGrup.setVisible(true);
+               cadGrup.editar(idGrupPord);
+               buscarTB();
+           } catch (SQLException ex) {
+               Logger.getLogger(ConsultaGrupoProduto.class.getName()).log(Level.SEVERE, null, ex);
+               JOptionPane.showMessageDialog(this, ex, "Erro na alteração", JOptionPane.WARNING_MESSAGE);
+           }
        }
         buscarTB();
     }//GEN-LAST:event_btnAlterarActionPerformed
@@ -238,17 +251,23 @@ public class ConsultaGrupoProduto extends javax.swing.JFrame {
     
     
     public void buscarTB(){
-        DefaultTableModel model = (DefaultTableModel) tabelaProd.getModel();
+        try {
+            DefaultTableModel model = (DefaultTableModel) tabelaProd.getModel();
             model.setRowCount(0);
-            for(GrupoProduto grupProd: grupProdDAO.listarPorNome(txtField.getText())) {
+            for(GrupoProduto grupProd: grupProdDAO.listartoPorNome(txtField.getText())) {
                 Object[] row = new Object[3];
                 row[0] = grupProd.getIdGrupoProduto();
-                row[1   ] = grupProd.getNomeGrupoProduto();
+                row[1] = grupProd.getNomeGrupoProduto();
                 row[2] = grupProd.getTipoProduto();
-                model.addRow(row); 
+                model.addRow(row);
             }  
+        } catch (SQLException ex) {
+            Logger.getLogger(ConsultaGrupoProduto.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println(ex.getMessage());
+                    
+        }
     }
- static void main(String args[]) {
+ public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
