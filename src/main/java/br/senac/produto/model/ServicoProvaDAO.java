@@ -37,7 +37,7 @@ public class ServicoProvaDAO implements BaseDAO<ServicoProva, Long>{
                     sdf.parse("10/10/2002"), 1.5F, dao.getPorId(8), 2.4F));
             listaServico.add(new ServicoProva(5L, "Curso EAD Redes", TipoProduto.SERVICO,
                     sdf.parse("10/10/2002"), 1.5F, dao.getPorId(8), 2.4F));
-        } catch (ParseException ex) {
+        } catch (Exception ex) {
             throw new RuntimeException("Erro ServicoDAO", ex);
         }
     }

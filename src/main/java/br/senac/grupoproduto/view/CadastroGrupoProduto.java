@@ -13,7 +13,7 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import static java.lang.Integer.parseInt;
+import java.sql.SQLException;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -34,14 +34,15 @@ public class CadastroGrupoProduto extends JDialog {
     private JRadioButton btnServ;
     private JRadioButton btnMerc;
     private JRadioButton btnMateria;
-    
+
     private GrupoProduto grupProd;
     private GrupoProdutoDAO grupProdDAO = new GrupoProdutoDAO();
+
     public static void main(String[] args) {
 
         CadastroGrupoProduto cadGrupProd = new CadastroGrupoProduto();
         cadGrupProd.setVisible(true);
-        
+
     }
 
     public CadastroGrupoProduto() {
@@ -92,7 +93,7 @@ public class CadastroGrupoProduto extends JDialog {
         centerPn.add(opt1);
 
         add(centerPn, BorderLayout.CENTER);
-        
+
         btnGravar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -101,9 +102,9 @@ public class CadastroGrupoProduto extends JDialog {
         });
     }
 
-    public void editar(Integer id) {
+    public void editar(Integer id) throws SQLException {
         GrupoProdutoDAO grupProdDAO = new GrupoProdutoDAO();
-        grupProd = grupProdDAO.getGrupoProdutoPorId(id);
+        grupProd = grupProdDAO.getPorId(id);
 
         txtNome.setText(grupProd.getNomeGrupoProduto());
         txtCodigo.setText(id.toString());
@@ -112,64 +113,77 @@ public class CadastroGrupoProduto extends JDialog {
             btnServ.setSelected(true);
         } else if (grupProd.getTipoProduto() == TipoProduto.MERCADORIA) {
             btnMerc.setSelected(true);
-        } else if(grupProd.getTipoProduto() == TipoProduto.MATERIA_PRIMA)
+        } else if (grupProd.getTipoProduto() == TipoProduto.MATERIA_PRIMA) {
             btnMateria.setSelected(true);
+        }
     }
 
     public void gravar() {
-        Integer integerCod =  null;
-        if(!txtCodigo.getText().equals("")){
-         integerCod = new Integer(txtCodigo.getText());
-        //pegar id que está em String e transfireri para Integer
-        }
-        if(grupProd == null){
-            grupProd = new GrupoProduto();
-        }
-        
-        if(txtNome.getText().trim().equals("")){
-            JOptionPane.showMessageDialog(this,"Digite nome do produto","Atenção",JOptionPane.WARNING_MESSAGE);
-            txtNome.requestFocus();
+        if (validar() == false) {
             return;
         }
-        
-        if(btnMateria.isSelected()== false && btnMerc.isSelected() == false 
-        && btnServ.isSelected() == false  ){
-            //cirar JOPTION ERROR
-            JOptionPane.showMessageDialog(this,"Selecione um Tipo de produto","Atenção",JOptionPane.WARNING_MESSAGE);
-        }
-        
-        //fazer a pergunta para o usuário - confirmação JOptionPane
-           int resp = JOptionPane.showConfirmDialog(this, "Deseja continuar?","Escolha um opção",JOptionPane.OK_OPTION);
-           if(resp != JOptionPane.OK_OPTION){
-               return;
-           }
-        
-        
-        //DataBinding
-        
-        if (btnServ.isSelected() == true) {
-            grupProd.setTipoProduto(TipoProduto.SERVICO);
-        }else if(btnMerc.isSelected() == true) {
-            grupProd.setTipoProduto(TipoProduto.MERCADORIA);
-        }else if(btnMateria.isSelected() == true){
-            grupProd.setTipoProduto(TipoProduto.MATERIA_PRIMA);
-        }    
-            grupProd.setNomeGrupoProduto(txtNome.getText());
-            grupProd.setIdGrupoProduto(integerCod);
-            
-        if(txtCodigo.getText().equals("")){ //inclusão
-            Integer novoId = 0;
-            novoId = grupProdDAO.inserir(grupProd);
-            JOptionPane.showMessageDialog(this, "O produto "+grupProd.getNomeGrupoProduto()+"com id "+grupProd.getIdGrupoProduto());
-                
-        }else { //alteração 
-                
-                grupProdDAO.alterar(grupProd);
-            
 
-                JOptionPane.showMessageDialog(this, "Alterado com sucesso");        
-     }
-        
+        Integer integerCod = null;
+        if (!txtCodigo.getText().equals("")) {
+            integerCod = new Integer(txtCodigo.getText());
+
+        }
+        if (grupProd == null) {
+            grupProd = new GrupoProduto();
+        }
+
+        int resp = JOptionPane.showConfirmDialog(this, "Deseja continuar?", "Escolha um opção", JOptionPane.OK_OPTION);
+        if (resp != JOptionPane.OK_OPTION) {
+            return;
+        }
+        dataBinding();
     }
 
+    public void dataBinding() {
+        Integer integerCod = null;
+        if (btnServ.isSelected() == true) {
+            grupProd.setTipoProduto(TipoProduto.SERVICO);
+        } else if (btnMerc.isSelected() == true) {
+            grupProd.setTipoProduto(TipoProduto.MERCADORIA);
+        } else if (btnMateria.isSelected() == true) {
+            grupProd.setTipoProduto(TipoProduto.MATERIA_PRIMA);
+        }
+        grupProd.setNomeGrupoProduto(txtNome.getText());
+        grupProd.setIdGrupoProduto(integerCod);
+
+        try {
+            if (txtCodigo.getText().equals("")) {
+                Integer novoId = 0;
+                novoId = grupProdDAO.inserir(grupProd);
+                JOptionPane.showMessageDialog(this, "O produto " + grupProd.getNomeGrupoProduto() + "com id " + novoId);
+
+            } else {
+
+                grupProdDAO.alterar(grupProd);
+                JOptionPane.showMessageDialog(this, "Alterado com sucesso");
+            }
+        } catch (Exception e) {
+
+            JOptionPane.showMessageDialog(this, e, "ERRO INESPERADO", JOptionPane.ERROR_MESSAGE);
+        }
+
+    }
+
+    public boolean validar() {
+
+        if (txtNome.getText().trim().equals("")) {
+            JOptionPane.showMessageDialog(this, "Digite nome do produto", "Atenção", JOptionPane.WARNING_MESSAGE);
+            txtNome.requestFocus();
+            return false;
+
+        }
+
+        if (btnMateria.isSelected() == false && btnMerc.isSelected() == false
+                && btnServ.isSelected() == false) {
+
+            JOptionPane.showMessageDialog(this, "Selecione um Tipo de produto", "Atenção", JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+        return true;
+    }
 }

@@ -7,6 +7,7 @@ package br.senac.grupoproduto.view;
 
 import br.senac.produto.model.GrupoProduto;
 import br.senac.produto.model.GrupoProdutoDAO;
+import br.senac.produto.model.GrupoProdutoMOCDAO;
 import br.senac.produto.model.ProdutoProva;
 import br.senac.produto.model.ServicoProva;
 import br.senac.produto.model.ServicoProvaDAO;
@@ -31,7 +32,7 @@ public class ConsultaServicoProva extends javax.swing.JFrame {
         initComponents();
         BuscarTB();
         //Carregar os dados no ComboBox, onde cbGrupo é o nome do componente JComboBox
-        GrupoProdutoDAO daoGrupo = new GrupoProdutoDAO();
+        GrupoProdutoMOCDAO daoGrupo = new GrupoProdutoMOCDAO();
         List<GrupoProduto> lista = daoGrupo.listarPorTipo(TipoProduto.SERVICO,"");
         DefaultComboBoxModel comboModel = new DefaultComboBoxModel(lista.toArray());
         combBoxGrup.setModel(comboModel);

@@ -1,13 +1,14 @@
 
 package br.senac.produto.model;
 
+import java.sql.SQLException;
 import java.util.List;
 
 
 public class GrupoProdutoDAOTeste {
-    public static void main (String[] args){
+    public static void main (String[] args) throws SQLException{
         
-        GrupoProdutoJDBCDAO dao = new GrupoProdutoJDBCDAO();
+        GrupoProdutoDAO dao = new GrupoProdutoDAO();
         
        
         GrupoProduto gpNovo = new GrupoProduto();
@@ -22,7 +23,7 @@ public class GrupoProdutoDAOTeste {
             System.out.println(gp.getNomeGrupoProduto());
         }
         **/
-        dao.inserir(gpNovo);
+        dao.alterar(gpNovo);
         
     }
     
