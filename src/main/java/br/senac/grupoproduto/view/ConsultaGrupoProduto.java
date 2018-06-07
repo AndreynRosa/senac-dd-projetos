@@ -74,7 +74,7 @@ public class ConsultaGrupoProduto extends javax.swing.JFrame {
             public void ancestorMoved(javax.swing.event.AncestorEvent evt) {
             }
             public void ancestorAdded(javax.swing.event.AncestorEvent evt) {
-                jToolBar1AncestorAdded(evt);
+               
             }
             public void ancestorRemoved(javax.swing.event.AncestorEvent evt) {
             }
@@ -117,12 +117,6 @@ public class ConsultaGrupoProduto extends javax.swing.JFrame {
         btnBuscar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnBuscarActionPerformed(evt);
-            }
-        });
-
-        txtField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtFieldActionPerformed(evt);
             }
         });
 
@@ -300,12 +294,8 @@ public class ConsultaGrupoProduto extends javax.swing.JFrame {
     }//GEN-LAST:event_fieldNomeActionPerformed
 
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
-       buscarTB();
+            buscarTB();
     }//GEN-LAST:event_btnBuscarActionPerformed
-
-    private void txtFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFieldActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtFieldActionPerformed
 
    
     
