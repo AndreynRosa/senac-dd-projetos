@@ -34,10 +34,9 @@ public class CadastroGrupoProduto extends JDialog {
     private JRadioButton btnServ;
     private JRadioButton btnMerc;
     private JRadioButton btnMateria;
-
     private GrupoProduto grupProd;
     private GrupoProdutoDAO grupProdDAO = new GrupoProdutoDAO();
-
+    private Integer integerCod = null;
     public static void main(String[] args) {
 
         CadastroGrupoProduto cadGrupProd = new CadastroGrupoProduto();
@@ -50,7 +49,8 @@ public class CadastroGrupoProduto extends JDialog {
         setSize(600, 250);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-
+        setModal(true);
+        
         JButton btnGravar = new JButton("Gravar");//botão de baixo
         btnGravar.setSize(new Dimension(80, 30));
         btnGravar.setLocation(360, 40);
@@ -122,8 +122,6 @@ public class CadastroGrupoProduto extends JDialog {
         if (validar() == false) {
             return;
         }
-
-        Integer integerCod = null;
         if (!txtCodigo.getText().equals("")) {
             integerCod = new Integer(txtCodigo.getText());
 
@@ -140,7 +138,7 @@ public class CadastroGrupoProduto extends JDialog {
     }
 
     public void dataBinding() {
-        Integer integerCod = null;
+        
         if (btnServ.isSelected() == true) {
             grupProd.setTipoProduto(TipoProduto.SERVICO);
         } else if (btnMerc.isSelected() == true) {

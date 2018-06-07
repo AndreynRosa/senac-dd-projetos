@@ -9,7 +9,6 @@ import br.senac.produto.model.GrupoProduto;
 import br.senac.produto.model.GrupoProdutoDAO;
 import java.sql.SQLException;
 
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -42,6 +41,7 @@ public class ConsultaGrupoProduto extends javax.swing.JFrame {
 
         jScrollBar1 = new javax.swing.JScrollBar();
         jPasswordField1 = new javax.swing.JPasswordField();
+        jMenu1 = new javax.swing.JMenu();
         lblID = new javax.swing.JPanel();
         jToolBar1 = new javax.swing.JToolBar();
         bntNovoCad = new javax.swing.JButton();
@@ -57,12 +57,28 @@ public class ConsultaGrupoProduto extends javax.swing.JFrame {
         lblNome = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
+        jMenuBar1 = new javax.swing.JMenuBar();
+        jMenu = new javax.swing.JMenu();
+        jMenuItem2 = new javax.swing.JMenuItem();
+        jMenuItem3 = new javax.swing.JMenuItem();
+        jMenuItem1 = new javax.swing.JMenuItem();
 
         jPasswordField1.setText("jPasswordField1");
+
+        jMenu1.setText("jMenu1");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jToolBar1.setRollover(true);
+        jToolBar1.addAncestorListener(new javax.swing.event.AncestorListener() {
+            public void ancestorMoved(javax.swing.event.AncestorEvent evt) {
+            }
+            public void ancestorAdded(javax.swing.event.AncestorEvent evt) {
+                jToolBar1AncestorAdded(evt);
+            }
+            public void ancestorRemoved(javax.swing.event.AncestorEvent evt) {
+            }
+        });
 
         bntNovoCad.setText("Novo");
         bntNovoCad.setFocusable(false);
@@ -101,6 +117,12 @@ public class ConsultaGrupoProduto extends javax.swing.JFrame {
         btnBuscar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnBuscarActionPerformed(evt);
+            }
+        });
+
+        txtField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtFieldActionPerformed(evt);
             }
         });
 
@@ -188,6 +210,39 @@ public class ConsultaGrupoProduto extends javax.swing.JFrame {
 
         getContentPane().add(lblID, java.awt.BorderLayout.PAGE_START);
 
+        jMenu.setText("Tarefas");
+
+        jMenuItem2.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.InputEvent.ALT_MASK));
+        jMenuItem2.setText("Editar");
+        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAlterarActionPerformed(evt);
+            }
+        });
+        jMenu.add(jMenuItem2);
+
+        jMenuItem3.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_X, java.awt.event.InputEvent.ALT_MASK));
+        jMenuItem3.setText("Excluir");
+        jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnExcluirActionPerformed(evt);
+            }
+        });
+        jMenu.add(jMenuItem3);
+
+        jMenuItem1.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.ALT_MASK));
+        jMenuItem1.setText("Novo");
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bntNovoCadActionPerformed(evt);
+            }
+        });
+        jMenu.add(jMenuItem1);
+
+        jMenuBar1.add(jMenu);
+
+        setJMenuBar(jMenuBar1);
+
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
@@ -203,9 +258,10 @@ public class ConsultaGrupoProduto extends javax.swing.JFrame {
             try {
                 Integer idGrupPord = (Integer)tabelaProd.getModel().getValueAt(indexRow, 0);
                 int pergunta = JOptionPane.showConfirmDialog(this, "Confirma Exclusão","Exclusão!!!",JOptionPane.YES_OPTION);
-                if (pergunta == JOptionPane.YES_OPTION)
+                if (pergunta == JOptionPane.YES_OPTION){
                     grupProdDAO = new GrupoProdutoDAO();
-                grupProdDAO.excluir(idGrupPord);
+                    grupProdDAO.excluir(idGrupPord);
+                }
             } catch (SQLException ex) {
                 Logger.getLogger(ConsultaGrupoProduto.class.getName()).log(Level.SEVERE, null, ex);
                 JOptionPane.showMessageDialog(this, ex, "Erro na exclusão", JOptionPane.WARNING_MESSAGE);
@@ -221,8 +277,8 @@ public class ConsultaGrupoProduto extends javax.swing.JFrame {
        else{
            try {
                Integer idGrupPord = (Integer)tabelaProd.getModel().getValueAt(indexRow, 0);
-               cadGrup.setVisible(true);
                cadGrup.editar(idGrupPord);
+               cadGrup.setVisible(true);
                buscarTB();
            } catch (SQLException ex) {
                Logger.getLogger(ConsultaGrupoProduto.class.getName()).log(Level.SEVERE, null, ex);
@@ -244,8 +300,12 @@ public class ConsultaGrupoProduto extends javax.swing.JFrame {
     }//GEN-LAST:event_fieldNomeActionPerformed
 
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
-            buscarTB();
+       buscarTB();
     }//GEN-LAST:event_btnBuscarActionPerformed
+
+    private void txtFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtFieldActionPerformed
 
    
     
@@ -310,6 +370,12 @@ public class ConsultaGrupoProduto extends javax.swing.JFrame {
     private javax.swing.JTextField fieldTipProd;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JMenu jMenu;
+    private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JPasswordField jPasswordField1;
     private javax.swing.JScrollBar jScrollBar1;
     private javax.swing.JScrollPane jScrollPane1;
@@ -319,11 +385,6 @@ public class ConsultaGrupoProduto extends javax.swing.JFrame {
     private javax.swing.JTable tabelaProd;
     private javax.swing.JTextField txtField;
     // End of variables declaration//GEN-END:variables
-    
-    
-    
-    
-  
-     
+       
     }
 

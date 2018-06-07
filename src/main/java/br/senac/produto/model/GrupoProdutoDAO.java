@@ -24,6 +24,7 @@ public class GrupoProdutoDAO implements BaseDAO<GrupoProduto, Integer> {
 
     }
 
+    @Override
     public Integer inserir(GrupoProduto grupoProduto) throws SQLException {
         Integer pk = 0;
         grupoProduto.setDataInsclusao(new Date());
@@ -54,12 +55,13 @@ public class GrupoProdutoDAO implements BaseDAO<GrupoProduto, Integer> {
         throw new RuntimeException("Erro inesperado ao incluir grupo produto!");
     }
 
+    @Override
     public boolean alterar(GrupoProduto grupoProduto) throws SQLException {
         String sql = "UPDATE GRUPOPRODUTO SET"
-                + "nomeGRUPOPRODUTO ='" + grupoProduto.getNomeGrupoProduto() + "',"
-                + "tipo = '" + grupoProduto.getTipoProduto().getId() + "',"
-                + "percDesconto ='" + grupoProduto.getPercDesconto() + "' "
-                + "WHERE IDGRUPOPRODUTO ='" + grupoProduto.getIdGrupoProduto()+";'";
+                + " nomeGRUPOPRODUTO ='" + grupoProduto.getNomeGrupoProduto() + "',"
+                + " tipo = " + grupoProduto.getTipoProduto().getId() + ", "
+                + " percDesconto = " + grupoProduto.getPercDesconto() + " "
+                + " WHERE IDGRUPOPRODUTO ='" + grupoProduto.getIdGrupoProduto()+"'";
         System.out.println(sql);
         Connection conn = ConexaoDB.getInstance().getConnection();
         Statement stm = conn.createStatement();
@@ -71,21 +73,22 @@ public class GrupoProdutoDAO implements BaseDAO<GrupoProduto, Integer> {
                 
     }
 
+    @Override
     public boolean excluir(Integer id) throws SQLException {
-        String sqlExcluir = "DELETE FROM GRUPO GRUPOPRODUTO"
-                + "WERE IDGRUPOPRODUTO =" + id;
+        String sqlExcluir = "DELETE FROM GRUPOPRODUTO "
+                + "WHERE IDGRUPOPRODUTO = " + id;
         Connection conn = ConexaoDB.getInstance().getConnection();
-
+        
         try {
             Statement stm = conn.createStatement();
             int regAfetados = stm.executeUpdate(sqlExcluir);
             return (regAfetados == 1);
        
         } catch (SQLException e) {
-            String sqlAtualizar = "UPDATE GRUPOPRODUTO SET dataExclusao "
+            String sqlAtualizarData = "UPDATE GRUPOPRODUTO SET dataExclusao "
                     + "= CURDATE() WHERE IDGRUPOPRODUTO =" + id;
             Statement stm = conn.createStatement();
-            int regAfetados = stm.executeUpdate(sqlAtualizar);
+            int regAfetados = stm.executeUpdate(sqlAtualizarData);
             return (regAfetados == 1);
         }
 
