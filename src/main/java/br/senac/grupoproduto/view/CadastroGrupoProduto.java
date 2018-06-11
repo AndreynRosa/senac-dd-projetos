@@ -139,11 +139,11 @@ public class CadastroGrupoProduto extends JDialog {
 
     public void dataBinding() {
         
-        if (btnServ.isSelected() == true) {
+        if (btnServ.isSelected()) {
             grupProd.setTipoProduto(TipoProduto.SERVICO);
-        } else if (btnMerc.isSelected() == true) {
+        } else if (btnMerc.isSelected()) {
             grupProd.setTipoProduto(TipoProduto.MERCADORIA);
-        } else if (btnMateria.isSelected() == true) {
+        } else if (btnMateria.isSelected()) {
             grupProd.setTipoProduto(TipoProduto.MATERIA_PRIMA);
         }
         grupProd.setNomeGrupoProduto(txtNome.getText());
