@@ -9,6 +9,8 @@ import static br.senac.componentes.db.UtilSQL.fmtData;
 import br.senac.pedidovenda.model.FormaPagamento;
 import br.senac.pedidovenda.model.PedidoVenda;
 import br.senac.pedidovenda.model.TipoPedidoVenda;
+import java.util.Date;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -315,6 +317,7 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
     private void btnGravarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGravarActionPerformed
           config = !config;
           editarBotoesInterface(config);
+          dataBinding();
     }//GEN-LAST:event_btnGravarActionPerformed
 
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
@@ -353,9 +356,18 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
         if (!fieldIdCliente.getText().equals("")){
             pVenda.setIdPessoa(Long.parseLong(fieldIdCliente.getText()));
         }
-        //if(!fieldDataPedido.getText().equals("")){
-           //pVenda.setDtPedido(fmtData.format(fieldDataPedido.getValue()));
-        //}
+        if(!fieldDataPedido.getText().equals("")){
+            Date dt = new Date();
+            
+         String[] dataFormat= fieldDataPedido.getText().split("-");
+         
+         dt.setDate(Integer.parseInt(dataFormat[0]));
+         dt.setMonth(Integer.parseInt(dataFormat[1]));
+         dt.setYear(Integer.parseInt(dataFormat[2]));
+     
+            System.out.println(dt);
+          pVenda.setDtPedido(dt);
+        }
         if(comboBoxFormaPagamento.getSelectedItem().equals(1) ){
             pVenda.setFormaPagamento(FormaPagamento.DINHEIRO);  
         }else if(comboBoxFormaPagamento.getSelectedItem().equals(2) ){
@@ -388,6 +400,21 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
             pVenda.setObservacoes(textAreaObs.getText());
         }
 
+    }
+    private void validar(){
+       if(fieldIdPedido.getText().trim().equals("")){
+           JOptionPane.showMessageDialog(this,
+               "Digite um id de pedido", "Atenção", JOptionPane.WARNING_MESSAGE);
+           fieldIdCliente.requestFocus();
+           return;
+       }
+       if(fieldDataPedido.getText().trim().equals("")){
+           JOptionPane.showMessageDialog(this,
+               "Campo de data vazio", "Atenção", JOptionPane.WARNING_MESSAGE);
+          fieldDataPedido.requestFocus();
+          return;
+          
+       }
     }
     /**
      * @param args the command line arguments
