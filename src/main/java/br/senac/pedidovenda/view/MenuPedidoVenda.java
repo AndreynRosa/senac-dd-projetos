@@ -359,14 +359,14 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
         if(!fieldDataPedido.getText().equals("")){
             Date dt = new Date();
             
-         String[] dataFormat= fieldDataPedido.getText().split("-");
+        /* String[] dataFormat= fieldDataPedido.getText().split("-");
          
          dt.setDate(Integer.parseInt(dataFormat[0]));
          dt.setMonth(Integer.parseInt(dataFormat[1]));
          dt.setYear(Integer.parseInt(dataFormat[2]));
      
             System.out.println(dt);
-          pVenda.setDtPedido(dt);
+          pVenda.setDtPedido(dt);*/
         }
         if(comboBoxFormaPagamento.getSelectedItem().equals(1) ){
             pVenda.setFormaPagamento(FormaPagamento.DINHEIRO);  
@@ -412,8 +412,25 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
            JOptionPane.showMessageDialog(this,
                "Campo de data vazio", "Atenção", JOptionPane.WARNING_MESSAGE);
           fieldDataPedido.requestFocus();
-          return;
-          
+          return;    
+       }if(comboBoxFormaPagamento.getSelectedIndex() == 0){
+           JOptionPane.showMessageDialog(this,
+               "Selecione uma forma de pagamento", "Atenção", JOptionPane.WARNING_MESSAGE);
+                comboBoxFormaPagamento.requestFocus();
+            return;
+       }if(!(radBtnOrcamento.isSelected() && radBtnVendas.isSelected())){
+           JOptionPane.showMessageDialog(this,
+               "Selecione uma opção de vendas", "Atenção", JOptionPane.WARNING_MESSAGE);
+           return;
+                
+       }else if(fieldValorFrete.getText().trim().equals("")){
+           JOptionPane.showMessageDialog(this,
+               "Escolha uma opção", "Atenção", JOptionPane.WARNING_MESSAGE);
+           return;
+       }if(!(checkBoxTelemarkting.isSelected() && checkBoxFretGratis.isSelected())){
+           JOptionPane.showMessageDialog(this,
+               "Escolha uma opção", "Atenção", JOptionPane.WARNING_MESSAGE);
+           return;
        }
     }
     /**
