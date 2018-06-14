@@ -78,11 +78,11 @@
                                           <EmptySpace max="-2" attributes="0"/>
                                           <Component id="btnExcluir" min="-2" pref="79" max="-2" attributes="0"/>
                                       </Group>
-                                      <Component id="comboBoxFormaPagamento" alignment="0" min="-2" pref="107" max="-2" attributes="0"/>
                                       <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
                                           <Component id="fieldDataPedido" alignment="0" max="32767" attributes="0"/>
                                           <Component id="fieldIdCliente" alignment="0" pref="78" max="32767" attributes="0"/>
                                       </Group>
+                                      <Component id="comboBoxFormaPagamento" alignment="0" min="-2" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
                               <Component id="jPanel2" alignment="0" min="-2" max="-2" attributes="0"/>
@@ -139,7 +139,7 @@
                           <Component id="jLabel7" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="jScrollPane1" min="-2" pref="128" max="-2" attributes="0"/>
-                          <EmptySpace min="0" pref="13" max="32767" attributes="0"/>
+                          <EmptySpace min="0" pref="31" max="32767" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="1" attributes="0">
                           <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
@@ -206,11 +206,12 @@
         <Component class="javax.swing.JComboBox" name="comboBoxFormaPagamento">
           <Properties>
             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-              <StringArray count="4">
-                <StringItem index="0" value="            "/>
+              <StringArray count="5">
+                <StringItem index="0" value="Escolha uma op&#xe7;&#xe3;o"/>
                 <StringItem index="1" value="Dinheiro"/>
-                <StringItem index="2" value="Cart&#xe3;o"/>
-                <StringItem index="3" value="Cheque"/>
+                <StringItem index="2" value="Cart&#xe3;o Cr&#xe9;dito"/>
+                <StringItem index="3" value="Cartao D&#xe9;btio"/>
+                <StringItem index="4" value="Cheque"/>
               </StringArray>
             </Property>
           </Properties>

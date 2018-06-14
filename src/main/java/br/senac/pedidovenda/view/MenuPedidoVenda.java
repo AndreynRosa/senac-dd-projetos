@@ -30,6 +30,7 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
     private PedidoVendaDAO pVendaDAO = new PedidoVendaDAO();
     private Integer integerCod = null;
     private Long idPVenda;
+    SimpleDateFormat dateFormat = new SimpleDateFormat("dd/mm/yyyy");
 
     public MenuPedidoVenda() {
         initComponents();
@@ -107,7 +108,7 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
 
         jLabel4.setText("Forma de Pagamento");
 
-        comboBoxFormaPagamento.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "            ", "Dinheiro", "Cartão", "Cheque" }));
+        comboBoxFormaPagamento.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Escolha uma opção", "Dinheiro", "Cartão Crédito", "Cartao Débtio", "Cheque" }));
         comboBoxFormaPagamento.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 comboBoxFormaPagamentoActionPerformed(evt);
@@ -237,10 +238,10 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
                                         .addComponent(btnInserir, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(btnExcluir, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(comboBoxFormaPagamento, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                         .addComponent(fieldDataPedido, javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(fieldIdCliente, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 78, Short.MAX_VALUE))))
+                                        .addComponent(fieldIdCliente, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 78, Short.MAX_VALUE))
+                                    .addComponent(comboBoxFormaPagamento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -259,7 +260,6 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
                     .addComponent(btnInserir)
                     .addComponent(btnExcluir)
                     .addComponent(fieldIdPedido, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -285,7 +285,7 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
                         .addComponent(jLabel7)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 13, Short.MAX_VALUE))
+                        .addGap(0, 31, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -371,7 +371,6 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
             pVenda.setIdPessoa(Long.parseLong(fieldIdCliente.getText()));
         }
         if (!fieldDataPedido.getText().equals("")) {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/mm/yyyy");
 
             Date date = dateFormat.parse(fieldDataPedido.getText());
         }
@@ -486,8 +485,24 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
 
     private void buscar() throws SQLException {
         pVenda = buscarPedidoVenda();
-        if(pVenda != null) {
-           //fieldIdPedido.setS;
+        if (pVenda != null) {
+            fieldIdPedido.setText(pVenda.getIdPedido().toString());
+            fieldIdCliente.setText(pVenda.getIdPessoa().toString());
+            fieldDataPedido.setText(dateFormat.format(pVenda.getDtPedido()));
+            comboBoxFormaPagamento.setSelectedIndex(pVenda.getFormaPagamento().getId());
+            if(pVenda.getTipoPedidoVenda().getId().equals(2)){
+                radBtnOrcamento.setSelected(true);
+    
+            }else{
+                radBtnVendas.setSelected(true);
+            }
+            fieldValorFrete.setText(pVenda.getVlFrete().toString());
+            if(pVenda.getFreteGratis() == true){
+                checkBoxFretGratis.setSelected(true);
+            }else{
+                checkBoxTelemarkting.setSelected(true);     
+            }
+            textAreaObs.setText(pVenda.getObservacoes());
 
         }
     }
