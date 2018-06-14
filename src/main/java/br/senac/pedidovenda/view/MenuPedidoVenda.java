@@ -9,7 +9,11 @@ import static br.senac.componentes.db.UtilSQL.fmtData;
 import br.senac.pedidovenda.model.FormaPagamento;
 import br.senac.pedidovenda.model.PedidoVenda;
 import br.senac.pedidovenda.model.TipoPedidoVenda;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
@@ -18,14 +22,14 @@ import javax.swing.JOptionPane;
  */
 public class MenuPedidoVenda extends javax.swing.JFrame {
 
-   boolean config;
+    boolean config;
     private PedidoVenda pVenda = new PedidoVenda();
-   
-    
+    private Integer integerCod = null;
+
     public MenuPedidoVenda() {
-    initComponents();
-    config = true;
-    editarBotoesInterface(config);
+        initComponents();
+        config = true;
+        editarBotoesInterface(config);
     }
 
     /**
@@ -315,32 +319,37 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
     }//GEN-LAST:event_checkBoxTelemarktingActionPerformed
 
     private void btnGravarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGravarActionPerformed
-          config = !config;
-          editarBotoesInterface(config);
-          dataBinding();
+        config = !config;
+        editarBotoesInterface(config);
+        try {
+            dataBinding();
+        } catch (ParseException ex) {
+            Logger.getLogger(MenuPedidoVenda.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btnGravarActionPerformed
 
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
         config = !config;
         editarBotoesInterface(config);
-        
+
     }//GEN-LAST:event_btnBuscarActionPerformed
-    
-    private void editarBotoesInterface(boolean config){
+
+    private void editarBotoesInterface(boolean config) {
         fieldIdPedido.setEnabled(config);
         btnGravar.setVisible(!config);
-        if (!config){//Limpar
+        if (!config) {//Limpar
             btnBuscar.setText("Limpar");
             fieldIdCliente.requestFocus();
             limpar();
-            
-        }else{
+
+        } else {
             btnBuscar.setText("Buscar");
             fieldIdPedido.requestFocus();
-        }  
-        
+        }
+
     }
-    private void limpar(){
+
+    private void limpar() {
         fieldIdPedido.setText("");
         fieldIdCliente.setText("");
         comboBoxFormaPagamento.setSelectedItem(null);
@@ -349,17 +358,19 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
         fieldValorFrete.setText("");
         checkBoxTelemarkting.setSelected(false);
         checkBoxFretGratis.setSelected(false);
-        
+
     }
-    
-    private void dataBinding(){
-        if (!fieldIdCliente.getText().equals("")){
+
+    private void dataBinding() throws ParseException {
+        if (!fieldIdCliente.getText().equals("")) {
             pVenda.setIdPessoa(Long.parseLong(fieldIdCliente.getText()));
         }
-        if(!fieldDataPedido.getText().equals("")){
-            Date dt = new Date();
+        if (!fieldDataPedido.getText().equals("")) {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/mm/yyyy");
             
-        /* String[] dataFormat= fieldDataPedido.getText().split("-");
+            Date date = dateFormat.parse(fieldDataPedido.getText());
+            
+            /* String[] dataFormat= fieldDataPedido.getText().split("-");
          
          dt.setDate(Integer.parseInt(dataFormat[0]));
          dt.setMonth(Integer.parseInt(dataFormat[1]));
@@ -368,71 +379,95 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
             System.out.println(dt);
           pVenda.setDtPedido(dt);*/
         }
-        if(comboBoxFormaPagamento.getSelectedItem().equals(1) ){
-            pVenda.setFormaPagamento(FormaPagamento.DINHEIRO);  
-        }else if(comboBoxFormaPagamento.getSelectedItem().equals(2) ){
+        if (comboBoxFormaPagamento.getSelectedItem().equals(1)) {
+            pVenda.setFormaPagamento(FormaPagamento.DINHEIRO);
+        } else if (comboBoxFormaPagamento.getSelectedItem().equals(2)) {
             pVenda.setFormaPagamento(FormaPagamento.CARTAO_CREDITO);
-        }else if(comboBoxFormaPagamento.getSelectedItem().equals(3)){
+        } else if (comboBoxFormaPagamento.getSelectedItem().equals(3)) {
             pVenda.setFormaPagamento(FormaPagamento.CARTAO_DEBITO);
-        }else if(comboBoxFormaPagamento.getSelectedItem().equals(4)){
+        } else if (comboBoxFormaPagamento.getSelectedItem().equals(4)) {
             pVenda.setFormaPagamento(FormaPagamento.CHEQUE);
         }
-        
-        if (radBtnOrcamento.isSelected()){
+
+        if (radBtnOrcamento.isSelected()) {
             pVenda.setTipoPedidoVenda(TipoPedidoVenda.ORCAMENTO);
-        }else if (radBtnVendas.isSelected()){
+        } else if (radBtnVendas.isSelected()) {
             pVenda.setTipoPedidoVenda(TipoPedidoVenda.PEDIDO);
-            
+
         }
-        
-        if(!fieldValorFrete.getText().equals("")){
+
+        if (!fieldValorFrete.getText().equals("")) {
             pVenda.setFreteGratis(false);
             pVenda.setVlFrete(Double.parseDouble(fieldValorFrete.getText()));
         }
-               
-        if(checkBoxTelemarkting.isSelected()){
+
+        if (checkBoxTelemarkting.isSelected()) {
             pVenda.setTelemarketing(true);
-            
-        }else if(checkBoxFretGratis.isSelected()){
+
+        } else if (checkBoxFretGratis.isSelected()) {
             pVenda.setFreteGratis(true);
-            
-        }if(!textAreaObs.getText().equals("")){
+
+        }
+        if (!textAreaObs.getText().equals("")) {
             pVenda.setObservacoes(textAreaObs.getText());
         }
 
     }
-    private void validar(){
-       if(fieldIdPedido.getText().trim().equals("")){
-           JOptionPane.showMessageDialog(this,
-               "Digite um id de pedido", "Atenção", JOptionPane.WARNING_MESSAGE);
-           fieldIdCliente.requestFocus();
-           return;
-       }
-       if(fieldDataPedido.getText().trim().equals("")){
-           JOptionPane.showMessageDialog(this,
-               "Campo de data vazio", "Atenção", JOptionPane.WARNING_MESSAGE);
-          fieldDataPedido.requestFocus();
-          return;    
-       }if(comboBoxFormaPagamento.getSelectedIndex() == 0){
-           JOptionPane.showMessageDialog(this,
-               "Selecione uma forma de pagamento", "Atenção", JOptionPane.WARNING_MESSAGE);
-                comboBoxFormaPagamento.requestFocus();
-            return;
-       }if(!(radBtnOrcamento.isSelected() && radBtnVendas.isSelected())){
-           JOptionPane.showMessageDialog(this,
-               "Selecione uma opção de vendas", "Atenção", JOptionPane.WARNING_MESSAGE);
-           return;
-                
-       }else if(fieldValorFrete.getText().trim().equals("")){
-           JOptionPane.showMessageDialog(this,
-               "Escolha uma opção", "Atenção", JOptionPane.WARNING_MESSAGE);
-           return;
-       }if(!(checkBoxTelemarkting.isSelected() && checkBoxFretGratis.isSelected())){
-           JOptionPane.showMessageDialog(this,
-               "Escolha uma opção", "Atenção", JOptionPane.WARNING_MESSAGE);
-           return;
-       }
+
+    private boolean validar() {
+        if (fieldIdPedido.getText().trim().equals("")) {
+            JOptionPane.showMessageDialog(this,
+                    "Digite um id de pedido", "Atenção", JOptionPane.WARNING_MESSAGE);
+            fieldIdCliente.requestFocus();
+            return false;
+        }
+        if (fieldDataPedido.getText().trim().equals("")) {
+            JOptionPane.showMessageDialog(this,
+                    "Campo de data vazio", "Atenção", JOptionPane.WARNING_MESSAGE);
+            fieldDataPedido.requestFocus();
+            return false;
+        }
+        if (comboBoxFormaPagamento.getSelectedIndex() == 0) {
+            JOptionPane.showMessageDialog(this,
+                    "Selecione uma forma de pagamento", "Atenção", JOptionPane.WARNING_MESSAGE);
+            comboBoxFormaPagamento.requestFocus();
+            return false;
+        }
+        if (!(radBtnOrcamento.isSelected() && radBtnVendas.isSelected())) {
+            JOptionPane.showMessageDialog(this,
+                    "Selecione uma opção de vendas", "Atenção", JOptionPane.WARNING_MESSAGE);
+            return false;
+
+        } else if (fieldValorFrete.getText().trim().equals("")) {
+            JOptionPane.showMessageDialog(this,
+                    "Escolha uma opção", "Atenção", JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+        if (!(checkBoxTelemarkting.isSelected() && checkBoxFretGratis.isSelected())) {
+            JOptionPane.showMessageDialog(this,
+                    "Escolha uma opção", "Atenção", JOptionPane.WARNING_MESSAGE);
+        }
+        return true;
     }
+
+    private void gravar() {
+        if (!validar()) {
+            return;
+        }
+
+        if (fieldIdPedido.getText().equals("")) {
+            integerCod = new Integer(fieldIdPedido.getText());
+        }
+        if(pVenda == null){
+            pVenda = new PedidoVenda();
+        }
+        try {
+            dataBinding();
+        } catch (ParseException ex) {
+            Logger.getLogger(MenuPedidoVenda.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
     /**
      * @param args the command line arguments
      */
@@ -498,6 +533,5 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
     private javax.swing.JRadioButton radBtnVendas;
     private javax.swing.JTextArea textAreaObs;
     // End of variables declaration//GEN-END:variables
-   
-    
+
 }
