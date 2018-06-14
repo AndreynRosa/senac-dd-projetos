@@ -8,7 +8,10 @@ package br.senac.pedidovenda.view;
 import static br.senac.componentes.db.UtilSQL.fmtData;
 import br.senac.pedidovenda.model.FormaPagamento;
 import br.senac.pedidovenda.model.PedidoVenda;
+import br.senac.pedidovenda.model.PedidoVendaDAO;
 import br.senac.pedidovenda.model.TipoPedidoVenda;
+import com.mysql.jdbc.log.Log;
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -24,7 +27,9 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
 
     boolean config;
     private PedidoVenda pVenda = new PedidoVenda();
+    private PedidoVendaDAO pVendaDAO = new PedidoVendaDAO();
     private Integer integerCod = null;
+    private Long idPVenda;
 
     public MenuPedidoVenda() {
         initComponents();
@@ -367,17 +372,8 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
         }
         if (!fieldDataPedido.getText().equals("")) {
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd/mm/yyyy");
-            
+
             Date date = dateFormat.parse(fieldDataPedido.getText());
-            
-            /* String[] dataFormat= fieldDataPedido.getText().split("-");
-         
-         dt.setDate(Integer.parseInt(dataFormat[0]));
-         dt.setMonth(Integer.parseInt(dataFormat[1]));
-         dt.setYear(Integer.parseInt(dataFormat[2]));
-     
-            System.out.println(dt);
-          pVenda.setDtPedido(dt);*/
         }
         if (comboBoxFormaPagamento.getSelectedItem().equals(1)) {
             pVenda.setFormaPagamento(FormaPagamento.DINHEIRO);
@@ -458,13 +454,41 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
         if (fieldIdPedido.getText().equals("")) {
             integerCod = new Integer(fieldIdPedido.getText());
         }
-        if(pVenda == null){
+        if (pVenda == null) {
             pVenda = new PedidoVenda();
         }
         try {
             dataBinding();
         } catch (ParseException ex) {
             Logger.getLogger(MenuPedidoVenda.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void excluir() throws SQLException {
+        idPVenda = new Long(fieldIdCliente.getText());
+        if (idPVenda.equals(pVendaDAO.getPorId(idPVenda))) {
+            pVendaDAO.excluir(idPVenda);
+        }
+
+    }
+
+    private PedidoVenda buscarPedidoVenda() throws SQLException {
+        idPVenda = new Long(fieldIdCliente.getText());
+        if (pVenda == null) {
+            pVenda = new PedidoVenda();
+
+            return pVendaDAO.getPorId(idPVenda);
+        }
+        JOptionPane.showMessageDialog(this,
+                " PedidoVenda não encontrado", "Erro inesperado", JOptionPane.WARNING_MESSAGE);
+        return null;
+    }
+
+    private void buscar() throws SQLException {
+        pVenda = buscarPedidoVenda();
+        if(pVenda != null) {
+           //fieldIdPedido.setS;
+
         }
     }
 

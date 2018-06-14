@@ -14,7 +14,7 @@ import java.text.SimpleDateFormat;
 
 public class PedidoVendaDAO implements BaseDAO<PedidoVenda, Long> {
 
-    /*Testando...*/
+    /*Testando...
     public static void main(String[] args) throws SQLException {
         PedidoVendaDAO dao = new PedidoVendaDAO();
         PedidoVenda pedidoVenda = new PedidoVenda();
@@ -38,7 +38,7 @@ public class PedidoVendaDAO implements BaseDAO<PedidoVenda, Long> {
         dao.alterar(pedidoVenda);
         //dao.excluir(id);
     }
-
+    */
     private ItemPedidoVendaDAO itemPedVendaDAO = new ItemPedidoVendaDAO();
 
     @Override

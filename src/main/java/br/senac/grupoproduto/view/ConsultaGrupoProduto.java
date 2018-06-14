@@ -20,9 +20,7 @@ import javax.swing.table.DefaultTableModel;
  */
 public class ConsultaGrupoProduto extends javax.swing.JFrame {
 
-    /**
-     * Creates new form ConsultaGrupoProduto
-     */
+     private GrupoProdutoDAO grupProdDAO = new GrupoProdutoDAO();// variavel
      
     CadastroGrupoProduto cadGrup = new CadastroGrupoProduto();
     public ConsultaGrupoProduto() {
@@ -243,7 +241,7 @@ public class ConsultaGrupoProduto extends javax.swing.JFrame {
     private void fieldTipProdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fieldTipProdActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_fieldTipProdActionPerformed
-    private GrupoProdutoDAO grupProdDAO = new GrupoProdutoDAO();// variavel
+   
     private void btnExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirActionPerformed
         Integer indexRow = tabelaProd.getSelectedRow();
        if(indexRow == -1)
