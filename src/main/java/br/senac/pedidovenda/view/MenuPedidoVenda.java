@@ -341,6 +341,11 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
         config = !config;
         editarBotoesInterface(config);
+        try {
+            buscar();
+        } catch (SQLException ex) {
+            Logger.getLogger(MenuPedidoVenda.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
     }//GEN-LAST:event_btnBuscarActionPerformed
 
@@ -470,6 +475,7 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
         } catch (ParseException ex) {
             Logger.getLogger(MenuPedidoVenda.class.getName()).log(Level.SEVERE, null, ex);
         }
+        JOptionPane.showMessageDialog(this, "Inserção com sucesso!");
     }
 
     private void excluir() throws SQLException {
@@ -479,9 +485,9 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
         }
 
     }
-
+/**
     private PedidoVenda buscarPedidoVenda() throws SQLException {
-        idPVenda = new Long(fieldIdCliente.getText());
+       idPVenda = new Long(Long.parseLong(fieldIdCliente.getText()));
         if (pVenda == null) {
             pVenda = new PedidoVenda();
 
@@ -491,9 +497,11 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
                 " PedidoVenda não encontrado", "Erro inesperado", JOptionPane.WARNING_MESSAGE);
         return null;
     }
-
+**/
     private void buscar() throws SQLException {
-        pVenda = buscarPedidoVenda();
+        idPVenda = new Long(fieldIdCliente.getText());
+        pVenda =(pVendaDAO.getPorId(idPVenda));
+      
         if (pVenda != null) {
             fieldIdPedido.setText(pVenda.getIdPedido().toString());
             fieldIdCliente.setText(pVenda.getIdPessoa().toString());
