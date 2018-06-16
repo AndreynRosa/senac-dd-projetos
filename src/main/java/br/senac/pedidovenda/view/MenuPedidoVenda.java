@@ -88,6 +88,11 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
         });
 
         btnInserir.setText("Inserir");
+        btnInserir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnInserirActionPerformed(evt);
+            }
+        });
 
         btnExcluir.setText("Excluir");
         btnExcluir.addActionListener(new java.awt.event.ActionListener() {
@@ -339,6 +344,10 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
 
     }//GEN-LAST:event_btnBuscarActionPerformed
 
+    private void btnInserirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInserirActionPerformed
+        gravar();
+    }//GEN-LAST:event_btnInserirActionPerformed
+
     private void editarBotoesInterface(boolean config) {
         fieldIdPedido.setEnabled(config);
         btnGravar.setVisible(!config);
@@ -410,7 +419,7 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
     }
 
     private boolean validar() {
-        if (fieldIdPedido.getText().trim().equals("")) {
+        if (fieldIdCliente.getText().trim().equals("")) {
             JOptionPane.showMessageDialog(this,
                     "Digite um id de pedido", "Atenção", JOptionPane.WARNING_MESSAGE);
             fieldIdCliente.requestFocus();
@@ -428,19 +437,19 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
             comboBoxFormaPagamento.requestFocus();
             return false;
         }
-        if (!(radBtnOrcamento.isSelected() && radBtnVendas.isSelected())) {
+        if (radBtnOrcamento.isSelected() == false && radBtnVendas.isSelected() == false) {
             JOptionPane.showMessageDialog(this,
                     "Selecione uma opção de vendas", "Atenção", JOptionPane.WARNING_MESSAGE);
             return false;
 
         } else if (fieldValorFrete.getText().trim().equals("")) {
             JOptionPane.showMessageDialog(this,
-                    "Escolha uma opção", "Atenção", JOptionPane.WARNING_MESSAGE);
+                    "Digite o valor do frete", "Atenção", JOptionPane.WARNING_MESSAGE);
             return false;
         }
-        if (!(checkBoxTelemarkting.isSelected() && checkBoxFretGratis.isSelected())) {
+        if (checkBoxTelemarkting.isSelected() == false && checkBoxFretGratis.isSelected()== false) {
             JOptionPane.showMessageDialog(this,
-                    "Escolha uma opção", "Atenção", JOptionPane.WARNING_MESSAGE);
+                    "Escolha uma opção Telemarkint ou Frete Gratis", "Atenção", JOptionPane.WARNING_MESSAGE);
         }
         return true;
     }
@@ -450,8 +459,8 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
             return;
         }
 
-        if (fieldIdPedido.getText().equals("")) {
-            integerCod = new Integer(fieldIdPedido.getText());
+        if (!fieldIdPedido.getText().equals("")) {
+            integerCod = new Integer(Integer.parseInt(fieldIdPedido.getText()));
         }
         if (pVenda == null) {
             pVenda = new PedidoVenda();
