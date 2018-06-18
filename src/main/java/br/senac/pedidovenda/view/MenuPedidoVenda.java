@@ -29,7 +29,7 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
     private PedidoVenda pVenda = new PedidoVenda();
     private PedidoVendaDAO pVendaDAO = new PedidoVendaDAO();
     private Integer integerCod = null;
-    private Long idPVenda;
+    private Long idPVenda = null;
     SimpleDateFormat dateFormat = new SimpleDateFormat("dd/mm/yyyy");
 
     public MenuPedidoVenda() {
@@ -332,25 +332,32 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
         config = !config;
         editarBotoesInterface(config);
         try {
-            dataBinding();
+            inserir();
         } catch (ParseException ex) {
+            Logger.getLogger(MenuPedidoVenda.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
             Logger.getLogger(MenuPedidoVenda.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnGravarActionPerformed
 
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
-        config = !config;
-        editarBotoesInterface(config);
+    
         try {
             buscar();
         } catch (SQLException ex) {
             Logger.getLogger(MenuPedidoVenda.class.getName()).log(Level.SEVERE, null, ex);
         }
+        config = !config;
+        editarBotoesInterface(config);
 
     }//GEN-LAST:event_btnBuscarActionPerformed
 
     private void btnInserirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInserirActionPerformed
-        gravar();
+        try {
+            gravar();
+        } catch (SQLException ex) {
+            Logger.getLogger(MenuPedidoVenda.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btnInserirActionPerformed
 
     private void editarBotoesInterface(boolean config) {
@@ -359,7 +366,7 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
         if (!config) {//Limpar
             btnBuscar.setText("Limpar");
             fieldIdCliente.requestFocus();
-            limpar();
+            //limpar();
 
         } else {
             btnBuscar.setText("Buscar");
@@ -380,7 +387,7 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
 
     }
 
-    private void dataBinding() throws ParseException {
+    private void inserir() throws ParseException, SQLException {
         if (!fieldIdCliente.getText().equals("")) {
             pVenda.setIdPessoa(Long.parseLong(fieldIdCliente.getText()));
         }
@@ -388,13 +395,13 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
 
             Date date = dateFormat.parse(fieldDataPedido.getText());
         }
-        if (comboBoxFormaPagamento.getSelectedItem().equals(1)) {
+        if (comboBoxFormaPagamento.getSelectedItem().equals("DINHEIRO")) {
             pVenda.setFormaPagamento(FormaPagamento.DINHEIRO);
-        } else if (comboBoxFormaPagamento.getSelectedItem().equals(2)) {
+        } else if (comboBoxFormaPagamento.getSelectedItem().equals("CARTAO_CREDITO")) {
             pVenda.setFormaPagamento(FormaPagamento.CARTAO_CREDITO);
-        } else if (comboBoxFormaPagamento.getSelectedItem().equals(3)) {
+        } else if (comboBoxFormaPagamento.getSelectedItem().equals("CARTAO_DEBITO")) {
             pVenda.setFormaPagamento(FormaPagamento.CARTAO_DEBITO);
-        } else if (comboBoxFormaPagamento.getSelectedItem().equals(4)) {
+        } else if (comboBoxFormaPagamento.getSelectedItem().equals("CHEQUE")) {
             pVenda.setFormaPagamento(FormaPagamento.CHEQUE);
         }
 
@@ -420,6 +427,10 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
         if (!textAreaObs.getText().equals("")) {
             pVenda.setObservacoes(textAreaObs.getText());
         }
+        
+        pVendaDAO.inserir(pVenda);
+        JOptionPane.showMessageDialog(this,
+                    "O novo id do novo produt é: ", "Atenção", JOptionPane.WARNING_MESSAGE);
 
     }
 
@@ -459,7 +470,7 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
         return true;
     }
 
-    private void gravar() {
+    private void gravar() throws SQLException {
         if (!validar()) {
             return;
         }
@@ -471,7 +482,7 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
             pVenda = new PedidoVenda();
         }
         try {
-            dataBinding();
+            inserir();
         } catch (ParseException ex) {
             Logger.getLogger(MenuPedidoVenda.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -499,7 +510,9 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
     }
 **/
     private void buscar() throws SQLException {
-        idPVenda = new Long(fieldIdCliente.getText());
+        System.out.println("o:"+fieldIdPedido.getText());
+        idPVenda = (Long.parseLong(fieldIdPedido.getText()));
+        
         pVenda =(pVendaDAO.getPorId(idPVenda));
       
         if (pVenda != null) {

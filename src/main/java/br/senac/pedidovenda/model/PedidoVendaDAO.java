@@ -14,7 +14,7 @@ import java.text.SimpleDateFormat;
 
 public class PedidoVendaDAO implements BaseDAO<PedidoVenda, Long> {
 
-    /*Testando...
+    
     public static void main(String[] args) throws SQLException {
         PedidoVendaDAO dao = new PedidoVendaDAO();
         PedidoVenda pedidoVenda = new PedidoVenda();
@@ -27,19 +27,16 @@ public class PedidoVendaDAO implements BaseDAO<PedidoVenda, Long> {
         pedidoVenda.setTipoPedidoVenda(TipoPedidoVenda.PEDIDO);
         pedidoVenda.setVlTotal(0.0);
 
-        ItemPedidoVenda itemPedidoVenda1 = new ItemPedidoVenda();
-        pedidoVenda.getItensPedidoVenda().add(itemPedidoVenda1);
+       
 
-        ItemPedidoVenda itemPedidoVenda2 = new ItemPedidoVenda();
-        pedidoVenda.getItensPedidoVenda().add(itemPedidoVenda2);
         Long id = dao.inserir(pedidoVenda);
         System.out.println(dao.getNomeCliente(id));
         pedidoVenda.setTipoPedidoVenda(TipoPedidoVenda.ORCAMENTO);
         dao.alterar(pedidoVenda);
         //dao.excluir(id);
     }
-    */
-    private ItemPedidoVendaDAO itemPedVendaDAO = new ItemPedidoVendaDAO();
+    
+    
 
     @Override
     public PedidoVenda getPorId(Long idPedido) throws SQLException {
@@ -51,6 +48,7 @@ public class PedidoVendaDAO implements BaseDAO<PedidoVenda, Long> {
         if (rs.next() == false) {
             throw new RuntimeException("Pedido de venda não encontrado: " + idPedido + ".");
         }
+        System.out.println(rs);
         PedidoVenda pedidoVenda = getPedidoVenda(rs);
         return pedidoVenda;
     }
@@ -131,8 +129,7 @@ public class PedidoVendaDAO implements BaseDAO<PedidoVenda, Long> {
                 + "fretegratis = " + pedidoVenda.getFreteGratis() + ", "
                 + "idformapagto = " + (pedidoVenda.getFormaPagamento() == null ? "null" : pedidoVenda.getFormaPagamento().getId()) + ", "
                 + "observacoes = " + (pedidoVenda.getObservacoes() == null ? "null" : "'" + pedidoVenda.getObservacoes() + "'") + ", "
-                + "idPessoa = " + pedidoVenda.getIdPessoa() + ", "
-                + "vlTotal = " + pedidoVenda.getVlTotal() + " "
+                + "idPessoa = " + pedidoVenda.getIdPessoa() + " "
                 + "Where idPedido = " + pedidoVenda.getIdPedido();
         System.out.println(sql);
         Connection conn = ConexaoDB.getInstance().getConnection();
@@ -163,8 +160,7 @@ public class PedidoVendaDAO implements BaseDAO<PedidoVenda, Long> {
         pedidoVenda.setObservacoes(rs.getString("observacoes"));
         pedidoVenda.setIdPessoa(rs.getLong("idpessoa"));
 
-        List<ItemPedidoVenda> listaItens = itemPedVendaDAO.getItensPorPedido(idPedido);
-        pedidoVenda.setItensPedidoVenda(listaItens);
+        
 
         return pedidoVenda;
     }

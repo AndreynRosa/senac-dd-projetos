@@ -17,7 +17,7 @@ public class PedidoVenda {
     private String observacoes;
     private Long idPessoa;
     private Double vlTotal;
-    private List<ItemPedidoVenda> itensPedidoVenda = new ArrayList<>();
+   
 
     public PedidoVenda() {
     }
@@ -96,14 +96,6 @@ public class PedidoVenda {
 
     public void setIdPessoa(Long idPessoa) {
         this.idPessoa = idPessoa;
-    }
-
-    public List<ItemPedidoVenda> getItensPedidoVenda() {
-        return itensPedidoVenda;
-    }
-
-    public void setItensPedidoVenda(List<ItemPedidoVenda> itensPedidoVenda) {
-        this.itensPedidoVenda = itensPedidoVenda;
     }
 
     public Double getVlTotal() {
