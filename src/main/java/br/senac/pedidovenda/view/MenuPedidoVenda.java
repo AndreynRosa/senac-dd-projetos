@@ -51,7 +51,12 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
         pVenda = (pVendaDAO.getPorId(idPVenda));
         
         if (pVenda != null) {
+            
+            if(fieldIdPedido.getText().trim().equals("")){
+                
+            }
             fieldIdPedido.setText(pVenda.getIdPedido().toString());
+            
             fieldIdCliente.setText(pVenda.getIdPessoa().toString());
             fieldDataPedido.setText(dateFormat.format(pVenda.getDtPedido()));
             comboBoxFormaPagamento.setSelectedIndex(pVenda.getFormaPagamento().getId());
@@ -77,19 +82,7 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
         labelCliente.setText(pVendaDAO.getNomeCliente(idPVenda));
         return true;
     }
-    /*
-    private void editarFrete(boolean verifcar) {
-       fieldValorFrete.setEnabled(verifcar);
-        if (verifcar) {
-            fieldValorFrete.setText("");
-            fieldValorFrete.setEnabled(!verifcar);
-            
-        } else {
-            fieldValorFrete.setEnabled(verifcar);
-            fieldValorFrete.requestFocus();
-        }
-    }
-    */
+  
     private void editarEstadoBusca(boolean config) {
         fieldIdPedido.setEnabled(config);
         btnExcluir.setVisible(!config);
@@ -152,11 +145,8 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
     private void salvarDadosUsuario() throws SQLException, ParseException {
         
         pVenda.setIdPessoa(Long.parseLong(fieldIdCliente.getText()));
-
-        //fieldDataPedido.setText(dateFormat.format(pVenda.getDtPedido()));
         pVenda.setDtPedido(dateFormat.parse(fieldDataPedido.getText()));
-        //pVenda.setDtPedido((Date) fieldDataPedido.getValue());
-
+    
         switch (comboBoxFormaPagamento.getSelectedIndex()) {
             case 1:
                 pVenda.setFormaPagamento(FormaPagamento.DINHEIRO);
@@ -229,15 +219,15 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
             comboBoxFormaPagamento.requestFocus();
             return false;
         }
-        if (radBtnOrcamento.isSelected() == false && radBtnVendas.isSelected() == false) {
+        if (!radBtnOrcamento.isSelected() && !radBtnVendas.isSelected()) {
             JOptionPane.showMessageDialog(this,
                     "Selecione uma opção de vendas", "Atenção", JOptionPane.WARNING_MESSAGE);
             return false;
             
         }
-        if (checkBoxTelemarkting.isSelected() == false && checkBoxFretGratis.isSelected() == false) {
+        if (fieldValorFrete.getText().trim().endsWith("") && !checkBoxFretGratis.isSelected()) {
             JOptionPane.showMessageDialog(this,
-                    "Escolha uma opção Telemarkint ou Frete Gratis", "Atenção", JOptionPane.WARNING_MESSAGE);
+                    "Escolha um valor de frete", "Atenção", JOptionPane.WARNING_MESSAGE);
         }
         return true;
     }
