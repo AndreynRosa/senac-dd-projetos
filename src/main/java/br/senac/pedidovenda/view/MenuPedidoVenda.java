@@ -17,6 +17,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.scene.input.DataFormat;
 import javax.swing.JOptionPane;
 
 /**
@@ -39,6 +40,7 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
         inserir = true;
         editarEstadoBusca(config);
         editarEstadoInserir(inserir);
+        btnExcluir.setVisible(false);
     }
 
     private void buscar() throws SQLException {
@@ -71,10 +73,10 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
 
     private void editarEstadoBusca(boolean config) {
         fieldIdPedido.setEnabled(config);
-        btnGravar.setVisible(!config);
         if (!config) {//Limpar
             btnBuscar.setText("Limpar");
             fieldIdCliente.requestFocus();
+            btnExcluir.setVisible(config);
             //limpar();
 
         } else {
@@ -85,7 +87,7 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
     }
 
     private void editarEstadoInserir(boolean inserir) {
-        btnGravar.setEnabled(!inserir);
+        btnGravar.setEnabled(inserir);
         fieldIdPedido.setEnabled(inserir);
         if (inserir) {
             btnInserir.setText("Inserir");
@@ -96,15 +98,8 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
 
     }
 
-    private void excluir() throws SQLException {
-        idPVenda = new Long(fieldIdCliente.getText());
-        if (idPVenda.equals(pVendaDAO.getPorId(idPVenda))) {
-            pVendaDAO.excluir(idPVenda);
-        }
-
-    }
-
-    private void gravar() throws SQLException {
+   
+    private void gravar() throws SQLException, ParseException {
         if (!validar()) {
             return;
         }
@@ -134,11 +129,13 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
 
     }
 
-    private void salvarDadosUsuario() throws SQLException {
+    private void salvarDadosUsuario() throws SQLException, ParseException {
 
         pVenda.setIdPessoa(Long.parseLong(fieldIdCliente.getText()));
-
-        pVenda.setDtPedido((Date) fieldDataPedido.getValue());
+        
+        //fieldDataPedido.setText(dateFormat.format(pVenda.getDtPedido()));
+        pVenda.setDtPedido(dateFormat.parse(fieldDataPedido.getText()) );
+        //pVenda.setDtPedido((Date) fieldDataPedido.getValue());
 
         switch (comboBoxFormaPagamento.getSelectedIndex()) {
             case 1:
@@ -180,10 +177,13 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
             pVenda.setObservacoes(textAreaObs.getText());
         }
 
-        if (fieldIdCliente.getText().equals("")) {
+        if (fieldIdPedido.getText().equals("")) {
 
-            pVendaDAO.inserir(pVenda);
-            fieldIdPedido.setText(Long.toString(pVenda.getIdPedido()));
+           idPVenda = pVendaDAO.inserir(pVenda);
+            fieldIdPedido.setText(Long.toString(idPVenda));
+            System.out.println(idPVenda);
+                    
+                    
 
         } else {
             pVendaDAO.alterar(pVenda);
@@ -494,11 +494,17 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirActionPerformed
-        try {
-            excluir();
-        } catch (SQLException ex) {
-            Logger.getLogger(MenuPedidoVenda.class.getName()).log(Level.SEVERE, null, ex);
+        int retorno = JOptionPane.showConfirmDialog(this,"Confirma exclusao?","Exclusao",JOptionPane.YES_NO_OPTION);
+        if(retorno == JOptionPane.YES_OPTION){
+           idPVenda = Long.parseLong(fieldIdPedido.getText());
+            try {
+                pVendaDAO.excluir(idPVenda);
+            } catch (SQLException ex) {
+                Logger.getLogger(MenuPedidoVenda.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
         }
+        btnExcluir.setVisible(false);
     }//GEN-LAST:event_btnExcluirActionPerformed
 
     private void fieldIdPedidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fieldIdPedidoActionPerformed
@@ -526,13 +532,15 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
             gravar();
         } catch (SQLException ex) {
             Logger.getLogger(MenuPedidoVenda.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ParseException ex) {
+            Logger.getLogger(MenuPedidoVenda.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnGravarActionPerformed
 
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
         if (config) {
             try {
-                btnExcluir.setVisible(!config);
+                btnExcluir.setVisible(config);
                 buscar();
             } catch (SQLException ex) {
                 Logger.getLogger(MenuPedidoVenda.class.getName()).log(Level.SEVERE, null, ex);

@@ -69,10 +69,12 @@ public class PedidoVendaDAO implements BaseDAO<PedidoVenda, Long> {
         rs.updateObject("idFormaPagto", pedidoVenda.getFormaPagamento().getId());
         rs.updateObject("observacoes", pedidoVenda.getObservacoes());
         rs.updateObject("idPessoa", pedidoVenda.getIdPessoa());
+       System.out.println(sql);
         rs.insertRow();
         rs.last();
         Long id = rs.getLong(1);
         pedidoVenda.setIdPedido(id);
+        
         return id;
     }
 
@@ -87,12 +89,13 @@ public class PedidoVendaDAO implements BaseDAO<PedidoVenda, Long> {
             List<ItemPedidoVenda> listaItens = itemPedVendaDAO.getItensPorPedido(idPedido);
             if(listaItens != null){
                 for(ItemPedidoVenda item : listaItens){
-                    itemPedVendaDAO.excluir(item.getIdItemPedido());
+                    itemPedVendaDAO.excluir(item.getIdItemPedido());x
                 }
             }*/
             PreparedStatement pstm = conn.prepareStatement(sql);
+           
             pstm.setLong(1, idPedido);
-
+             System.out.println(sql);
             int nuPedExcluidos = pstm.executeUpdate();
             if (nuPedExcluidos == 0) {
                 return false;
