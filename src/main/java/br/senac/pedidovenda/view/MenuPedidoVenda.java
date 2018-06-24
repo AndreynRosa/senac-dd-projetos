@@ -522,14 +522,17 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
     }//GEN-LAST:event_checkBoxTelemarktingActionPerformed
 
     private void btnGravarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGravarActionPerformed
-        
-
-
+        try {
+            gravar();
+        } catch (SQLException ex) {
+            Logger.getLogger(MenuPedidoVenda.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btnGravarActionPerformed
 
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
         if (config) {
             try {
+                btnExcluir.setVisible(!config);
                 buscar();
             } catch (SQLException ex) {
                 Logger.getLogger(MenuPedidoVenda.class.getName()).log(Level.SEVERE, null, ex);
