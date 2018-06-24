@@ -33,15 +33,17 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
     private Integer integerCod = null;
     private Long idPVenda = null;
     private SimpleDateFormat dateFormat = new SimpleDateFormat("dd/mm/yyyy");
-    private boolean buscar;
+    private boolean verificar;
     
     public MenuPedidoVenda() {
         initComponents();
+        verificar = true;
         config = true;
         inserir = true;
         editarEstadoBusca(config);
         editarEstadoInserir(inserir);
         btnExcluir.setVisible(!config);
+        editarFrete(verificar);
     }
     
     private void buscar() throws SQLException {
@@ -61,7 +63,7 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
                 radBtnVendas.setSelected(true);
             }
             fieldValorFrete.setText(pVenda.getVlFrete().toString());
-            if (pVenda.getFreteGratis() == true) {
+            if (pVenda.getFreteGratis()) {
                 checkBoxFretGratis.setSelected(true);
             } else {
                 checkBoxTelemarkting.setSelected(true);
@@ -77,13 +79,15 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
         return true;
     }
     
-    private void editarFrete(boolean buscar) {
-        if (checkBoxFretGratis.isSelected()) {
+    private void editarFrete(boolean verifcar) {
+       fieldValorFrete.setEnabled(verifcar);
+        if (verifcar) {
             fieldValorFrete.setText("");
-            fieldValorFrete.setEnabled(!buscar);
+            fieldValorFrete.setEnabled(!verifcar);
             
         } else {
-            fieldValorFrete.setEnabled(buscar);
+            fieldValorFrete.setEnabled(verifcar);
+            fieldValorFrete.requestFocus();
         }
     }
     
@@ -275,7 +279,7 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         textAreaObs = new javax.swing.JTextArea();
         btnGravar = new javax.swing.JToggleButton();
-        jToggleButton2 = new javax.swing.JToggleButton();
+        btnCancelar = new javax.swing.JToggleButton();
         fieldDataPedido = new javax.swing.JFormattedTextField();
         labelCliente = new javax.swing.JLabel();
 
@@ -424,7 +428,12 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
             }
         });
 
-        jToggleButton2.setText("Cancelar");
+        btnCancelar.setText("Cancelar");
+        btnCancelar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelarActionPerformed(evt);
+            }
+        });
 
         labelCliente.setText("nome cliente");
 
@@ -443,7 +452,7 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnGravar)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jToggleButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(6, 6, 6))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -521,7 +530,7 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jToggleButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btnGravar))))
                 .addContainerGap())
         );
@@ -601,8 +610,9 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
     }//GEN-LAST:event_btnInserirActionPerformed
 
     private void checkBoxFretGratisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkBoxFretGratisActionPerformed
-        buscar = !buscar;
-        editarFrete(buscar);
+        verificar = !verificar;
+        editarFrete(verificar);
+        
     }//GEN-LAST:event_checkBoxFretGratisActionPerformed
 
     private void fieldValorFreteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fieldValorFreteActionPerformed
@@ -612,6 +622,10 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
     private void fieldIdClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fieldIdClienteActionPerformed
         
     }//GEN-LAST:event_fieldIdClienteActionPerformed
+
+    private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
+        dispose();
+    }//GEN-LAST:event_btnCancelarActionPerformed
 
     /**
      * private PedidoVenda buscarPedidoVenda() throws SQLException { idPVenda =
@@ -660,6 +674,7 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JToggleButton btnBuscar;
+    private javax.swing.JToggleButton btnCancelar;
     private javax.swing.JToggleButton btnExcluir;
     private javax.swing.JToggleButton btnGravar;
     private javax.swing.JToggleButton btnInserir;
@@ -684,7 +699,6 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JToggleButton jToggleButton2;
     private javax.swing.JLabel labelCliente;
     private javax.swing.JRadioButton radBtnOrcamento;
     private javax.swing.JRadioButton radBtnVendas;
