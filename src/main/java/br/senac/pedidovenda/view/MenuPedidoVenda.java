@@ -67,21 +67,22 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
                 checkBoxTelemarkting.setSelected(true);
             }
             textAreaObs.setText(pVenda.getObservacoes());
-            labelCliente.setText(pVendaDAO.getNomeCliente(idPVenda));
+            buscarCliente(idPVenda);
 
         }
     }
-    
-    private void buscarCliente(){
-        
+
+    private boolean buscarCliente(Long id) {
+        labelCliente.setText(pVendaDAO.getNomeCliente(idPVenda));
+        return true;
     }
-    
-    private void editarFrete(boolean buscar){
-        if (checkBoxFretGratis.isSelected()){
+
+    private void editarFrete(boolean buscar) {
+        if (checkBoxFretGratis.isSelected()) {
             fieldValorFrete.setText("");
             fieldValorFrete.setEnabled(!buscar);
-           
-        }else{
+
+        } else {
             fieldValorFrete.setEnabled(!buscar);
         }
     }
@@ -113,7 +114,6 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
 
     }
 
-   
     private void gravar() throws SQLException, ParseException {
         if (!validar()) {
             return;
@@ -147,9 +147,9 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
     private void salvarDadosUsuario() throws SQLException, ParseException {
 
         pVenda.setIdPessoa(Long.parseLong(fieldIdCliente.getText()));
-        
+
         //fieldDataPedido.setText(dateFormat.format(pVenda.getDtPedido()));
-        pVenda.setDtPedido(dateFormat.parse(fieldDataPedido.getText()) );
+        pVenda.setDtPedido(dateFormat.parse(fieldDataPedido.getText()));
         //pVenda.setDtPedido((Date) fieldDataPedido.getValue());
 
         switch (comboBoxFormaPagamento.getSelectedIndex()) {
@@ -194,18 +194,15 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
 
         if (fieldIdPedido.getText().equals("")) {
 
-           idPVenda = pVendaDAO.inserir(pVenda);
+            idPVenda = pVendaDAO.inserir(pVenda);
             fieldIdPedido.setText(Long.toString(idPVenda));
             System.out.println(idPVenda);
-                    
-                    
 
         } else {
             pVendaDAO.alterar(pVenda);
         }
 
     }
-    
 
     private boolean validar() {
         if (fieldIdCliente.getText().trim().equals("")) {
@@ -231,7 +228,6 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
                     "Selecione uma opção de vendas", "Atenção", JOptionPane.WARNING_MESSAGE);
             return false;
 
-       
         }
         if (checkBoxTelemarkting.isSelected() == false && checkBoxFretGratis.isSelected() == false) {
             JOptionPane.showMessageDialog(this,
@@ -533,15 +529,15 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirActionPerformed
-        int retorno = JOptionPane.showConfirmDialog(this,"Confirma exclusao?","Exclusao",JOptionPane.YES_NO_OPTION);
-        if(retorno == JOptionPane.YES_OPTION){
-           idPVenda = Long.parseLong(fieldIdPedido.getText());
+        int retorno = JOptionPane.showConfirmDialog(this, "Confirma exclusao?", "Exclusao", JOptionPane.YES_NO_OPTION);
+        if (retorno == JOptionPane.YES_OPTION) {
+            idPVenda = Long.parseLong(fieldIdPedido.getText());
             try {
                 pVendaDAO.excluir(idPVenda);
             } catch (SQLException ex) {
                 Logger.getLogger(MenuPedidoVenda.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
+
         }
         btnExcluir.setVisible(false);
         limpar();
@@ -570,7 +566,7 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
     private void btnGravarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGravarActionPerformed
         try {
             gravar();
-            
+
         } catch (SQLException ex) {
             Logger.getLogger(MenuPedidoVenda.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ParseException ex) {
@@ -611,7 +607,7 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
     }//GEN-LAST:event_fieldValorFreteActionPerformed
 
     private void fieldIdClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fieldIdClienteActionPerformed
-      
+        
     }//GEN-LAST:event_fieldIdClienteActionPerformed
 
     /**
