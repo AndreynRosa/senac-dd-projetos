@@ -26,13 +26,14 @@ import javax.swing.JOptionPane;
  */
 public class MenuPedidoVenda extends javax.swing.JFrame {
 
-    boolean inserir;
-    boolean config;
+    private boolean inserir;
+    private boolean config;
     private PedidoVenda pVenda = new PedidoVenda();
     private PedidoVendaDAO pVendaDAO = new PedidoVendaDAO();
     private Integer integerCod = null;
     private Long idPVenda = null;
     private SimpleDateFormat dateFormat = new SimpleDateFormat("dd/mm/yyyy");
+    private boolean buscar;
 
     public MenuPedidoVenda() {
         initComponents();
@@ -40,13 +41,12 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
         inserir = true;
         editarEstadoBusca(config);
         editarEstadoInserir(inserir);
-        btnExcluir.setVisible(false);
+        btnExcluir.setVisible(!config);
     }
 
     private void buscar() throws SQLException {
         System.out.println("o:" + fieldIdPedido.getText());
         idPVenda = (Long.parseLong(fieldIdPedido.getText()));
-
         pVenda = (pVendaDAO.getPorId(idPVenda));
 
         if (pVenda != null) {
@@ -67,16 +67,31 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
                 checkBoxTelemarkting.setSelected(true);
             }
             textAreaObs.setText(pVenda.getObservacoes());
+            labelCliente.setText(pVendaDAO.getNomeCliente(idPVenda));
 
+        }
+    }
+    
+    private void buscarCliente(){
+        
+    }
+    
+    private void editarFrete(boolean buscar){
+        if (checkBoxFretGratis.isSelected()){
+            fieldValorFrete.setText("");
+            fieldValorFrete.setEnabled(!buscar);
+           
+        }else{
+            fieldValorFrete.setEnabled(!buscar);
         }
     }
 
     private void editarEstadoBusca(boolean config) {
         fieldIdPedido.setEnabled(config);
+        btnExcluir.setVisible(!config);
         if (!config) {//Limpar
             btnBuscar.setText("Limpar");
             fieldIdCliente.requestFocus();
-            btnExcluir.setVisible(config);
             //limpar();
 
         } else {
@@ -190,6 +205,7 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
         }
 
     }
+    
 
     private boolean validar() {
         if (fieldIdCliente.getText().trim().equals("")) {
@@ -215,10 +231,7 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
                     "Selecione uma opção de vendas", "Atenção", JOptionPane.WARNING_MESSAGE);
             return false;
 
-        } else if (fieldValorFrete.getText().trim().equals("")) {
-            JOptionPane.showMessageDialog(this,
-                    "Digite o valor do frete", "Atenção", JOptionPane.WARNING_MESSAGE);
-            return false;
+       
         }
         if (checkBoxTelemarkting.isSelected() == false && checkBoxFretGratis.isSelected() == false) {
             JOptionPane.showMessageDialog(this,
@@ -238,6 +251,7 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
 
         buttonGroup3 = new javax.swing.ButtonGroup();
         buttonGroup1 = new javax.swing.ButtonGroup();
+        buttonGroup2 = new javax.swing.ButtonGroup();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         fieldIdCliente = new javax.swing.JTextField();
@@ -264,10 +278,17 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
         btnGravar = new javax.swing.JToggleButton();
         jToggleButton2 = new javax.swing.JToggleButton();
         fieldDataPedido = new javax.swing.JFormattedTextField();
+        labelCliente = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jLabel1.setText("Id Pedido");
+
+        fieldIdCliente.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                fieldIdClienteActionPerformed(evt);
+            }
+        });
 
         btnBuscar.setText("Buscar");
         btnBuscar.addActionListener(new java.awt.event.ActionListener() {
@@ -350,6 +371,12 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
 
         jLabel6.setText("Valor do Frente");
 
+        fieldValorFrete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                fieldValorFreteActionPerformed(evt);
+            }
+        });
+
         checkBoxTelemarkting.setText("Telemarkting");
         checkBoxTelemarkting.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -358,6 +385,11 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
         });
 
         checkBoxFretGratis.setText("Frete Grátis");
+        checkBoxFretGratis.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                checkBoxFretGratisActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -394,6 +426,8 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
         });
 
         jToggleButton2.setText("Cancelar");
+
+        labelCliente.setText("nome cliente");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -432,9 +466,12 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
                                         .addComponent(btnInserir, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(btnExcluir, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                        .addComponent(fieldDataPedido, javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(fieldIdCliente, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 78, Short.MAX_VALUE))
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                            .addComponent(fieldDataPedido, javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(fieldIdCliente, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 78, Short.MAX_VALUE))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(labelCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addComponent(comboBoxFormaPagamento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanel1Layout.createSequentialGroup()
@@ -456,10 +493,12 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
                     .addComponent(fieldIdPedido, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(fieldIdCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel2)
-                            .addComponent(fieldIdCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(31, 31, 31)
+                            .addComponent(labelCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(13, 13, 13)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel3)
                             .addComponent(fieldDataPedido, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -505,6 +544,7 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
             
         }
         btnExcluir.setVisible(false);
+        limpar();
     }//GEN-LAST:event_btnExcluirActionPerformed
 
     private void fieldIdPedidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fieldIdPedidoActionPerformed
@@ -530,6 +570,7 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
     private void btnGravarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGravarActionPerformed
         try {
             gravar();
+            
         } catch (SQLException ex) {
             Logger.getLogger(MenuPedidoVenda.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ParseException ex) {
@@ -559,6 +600,19 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
         editarEstadoInserir(inserir);
 
     }//GEN-LAST:event_btnInserirActionPerformed
+
+    private void checkBoxFretGratisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkBoxFretGratisActionPerformed
+        buscar = !buscar;
+        editarFrete(buscar);
+    }//GEN-LAST:event_checkBoxFretGratisActionPerformed
+
+    private void fieldValorFreteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fieldValorFreteActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_fieldValorFreteActionPerformed
+
+    private void fieldIdClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fieldIdClienteActionPerformed
+      
+    }//GEN-LAST:event_fieldIdClienteActionPerformed
 
     /**
      * private PedidoVenda buscarPedidoVenda() throws SQLException { idPVenda =
@@ -611,6 +665,7 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
     private javax.swing.JToggleButton btnGravar;
     private javax.swing.JToggleButton btnInserir;
     private javax.swing.ButtonGroup buttonGroup1;
+    private javax.swing.ButtonGroup buttonGroup2;
     private javax.swing.ButtonGroup buttonGroup3;
     private javax.swing.JCheckBox checkBoxFretGratis;
     private javax.swing.JCheckBox checkBoxTelemarkting;
@@ -631,6 +686,7 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JToggleButton jToggleButton2;
+    private javax.swing.JLabel labelCliente;
     private javax.swing.JRadioButton radBtnOrcamento;
     private javax.swing.JRadioButton radBtnVendas;
     private javax.swing.JTextArea textAreaObs;
