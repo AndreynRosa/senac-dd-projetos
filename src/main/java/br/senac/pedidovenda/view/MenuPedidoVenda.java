@@ -213,7 +213,7 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
             fieldDataPedido.requestFocus();
             return false;
         }
-        if (comboBoxFormaPagamento.getSelectedIndex() == 0) {
+        if (comboBoxFormaPagamento.getSelectedIndex() == -1) {
             JOptionPane.showMessageDialog(this,
                     "Selecione uma forma de pagamento", "Atenção", JOptionPane.WARNING_MESSAGE);
             comboBoxFormaPagamento.requestFocus();
