@@ -37,13 +37,12 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
     
     public MenuPedidoVenda() {
         initComponents();
-        verificar = true;
         config = true;
         inserir = true;
         editarEstadoBusca(config);
         editarEstadoInserir(inserir);
         btnExcluir.setVisible(!config);
-        editarFrete(verificar);
+        
     }
     
     private void buscar() throws SQLException {
@@ -78,7 +77,7 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
         labelCliente.setText(pVendaDAO.getNomeCliente(idPVenda));
         return true;
     }
-    
+    /*
     private void editarFrete(boolean verifcar) {
        fieldValorFrete.setEnabled(verifcar);
         if (verifcar) {
@@ -90,7 +89,7 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
             fieldValorFrete.requestFocus();
         }
     }
-    
+    */
     private void editarEstadoBusca(boolean config) {
         fieldIdPedido.setEnabled(config);
         btnExcluir.setVisible(!config);
@@ -610,8 +609,12 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
     }//GEN-LAST:event_btnInserirActionPerformed
 
     private void checkBoxFretGratisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkBoxFretGratisActionPerformed
-        verificar = !verificar;
-        editarFrete(verificar);
+       if(checkBoxFretGratis.isSelected()){
+           fieldValorFrete.setText("");
+           fieldValorFrete.setEnabled(false);
+       }else{
+           fieldValorFrete.setEnabled(true);
+       }
         
     }//GEN-LAST:event_checkBoxFretGratisActionPerformed
 
