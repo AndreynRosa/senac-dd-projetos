@@ -32,7 +32,7 @@ public class PedidoVendaDAO implements BaseDAO<PedidoVenda, Long> {
         Long id = dao.inserir(pedidoVenda);
         System.out.println(dao.getNomeCliente(id));
         pedidoVenda.setTipoPedidoVenda(TipoPedidoVenda.ORCAMENTO);
-        dao.alterar(pedidoVenda);
+       dao.alterar(pedidoVenda);
         //dao.excluir(id);
     }
     
