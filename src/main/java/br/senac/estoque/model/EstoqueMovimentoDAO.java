@@ -42,7 +42,7 @@ public class EstoqueMovimentoDAO implements BaseDAO<EstoqueMovimento, Long> {
         estoque.setTipoMovto(TipoMovimentoEstoque.ENTRADA);
         estoque.setQuantidade(33.0);
 
-        mercadoria.setIdMercadoria(10L);
+        mercadoria.setIdMercadoria(7L);
         estoque.setProduto(mercadoria);
         estoque.setIdUsuario(10);
         estoque.setObservacoes("Vai dar certo pelo amor!!!!");
@@ -53,9 +53,7 @@ public class EstoqueMovimentoDAO implements BaseDAO<EstoqueMovimento, Long> {
         estoqueDao.alterar(estoque);
 
         System.out.println(estoqueDao.getPorId(id));
-
         System.out.println(estoqueDao.getPorId(id));
-
         System.out.println(estoqueDao.excluir(id));
 
     }
@@ -113,8 +111,7 @@ public class EstoqueMovimentoDAO implements BaseDAO<EstoqueMovimento, Long> {
      * @param idMovtoEstoque
      */
     private void atualizarSaldoEstoque(Long idProduto, Double quantidade) throws SQLException {
-        EstoqueMovimento estoqueMovimento = new EstoqueMovimento();
-
+       
         String sql = "select * from estoquemovto where idProduto = " + idProduto;
         ResultSet rs = UtilSQL.executarQuery(sql);
 
@@ -129,8 +126,8 @@ public class EstoqueMovimentoDAO implements BaseDAO<EstoqueMovimento, Long> {
             Connection conn = ConexaoDB.getInstance().getConnection();
             PreparedStatement ps = conn.prepareStatement(sql);
 
-            ps.setObject(1, estoqueMovimento.getProduto().getIdProduto());
-            ps.setObject(2, estoqueMovimento.getQuantidade());
+            ps.setLong(1, idProduto);
+            ps.setDouble(2, quantidade);
 
             int regAlterados = ps.executeUpdate();
 
@@ -144,9 +141,9 @@ public class EstoqueMovimentoDAO implements BaseDAO<EstoqueMovimento, Long> {
                 Connection conn = ConexaoDB.getInstance().getConnection();
                 PreparedStatement ps = conn.prepareStatement(sqlAdd);
 
-                ps.setObject(1, (quantidade + saldo));
-                ps.setObject(2, idProduto);
-
+                ps.setDouble(1, (quantidade + saldo));
+                ps.setLong(2, idProduto);
+                ps.executeUpdate();
             } else {
                 String sqlSub = "UPDATE `projeto`.`estoquesaldo` SET"
                         + "`saldo` = " + (quantidade - saldo) + ""
@@ -157,7 +154,8 @@ public class EstoqueMovimentoDAO implements BaseDAO<EstoqueMovimento, Long> {
 
                 ps.setObject(1, (quantidade + saldo));
                 ps.setObject(2, idProduto);
-            }
+                ps.executeUpdate();
+            }   
         }
 
     }
@@ -171,10 +169,12 @@ public class EstoqueMovimentoDAO implements BaseDAO<EstoqueMovimento, Long> {
      * idUsuario e observacoes que podem ou não ser nulos (null).
      *
      * @param movtoEstoque
+     * @return 
+     * @throws java.sql.SQLException
      */
     @Override
     public Long inserir(EstoqueMovimento movtoEstoque) throws SQLException {
-        EstoqueMovimento estoqueMovimento = new EstoqueMovimento();
+        
         String sql = "INSERT INTO `projeto`.`estoquemovto`\n"
                 + "("
                 + "`quantidade`,\n"
@@ -189,29 +189,26 @@ public class EstoqueMovimentoDAO implements BaseDAO<EstoqueMovimento, Long> {
                 + "?,\n"
                 + "?,\n"
                 + "?,\n"
-                + "?,\n"
                 + "?);";
         Connection conn = ConexaoDB.getInstance().getConnection();
         PreparedStatement ps = conn.prepareStatement(sql);
 
-        ps.setObject(1, estoqueMovimento.getQuantidade());
-        ps.setObject(2, estoqueMovimento.getTipoMovto());
-        ps.setTimestamp(3, new java.sql.Timestamp(estoqueMovimento.getDataMovto().getTime()));
-        ps.setObject(4, estoqueMovimento.getProduto().getIdProduto());
-        ps.setObject(5, estoqueMovimento.getIdUsuario());
-        ps.setObject(6, estoqueMovimento.getObservacoes());
+        ps.setDouble(1, movtoEstoque.getQuantidade());
+        ps.setString(2, movtoEstoque.getTipoMovto().getCodigo().toString());
+        ps.setTimestamp(3, new java.sql.Timestamp(movtoEstoque.getDataMovto().getTime()));
+        ps.setLong(4, movtoEstoque.getProduto().getIdProduto());
+        ps.setLong(5, movtoEstoque.getIdUsuario());
+        ps.setString(6, movtoEstoque.getObservacoes());
         System.out.println(sql);
         ps.executeUpdate();
-        
-        ResultSet rsChaveGerada = ps.getGeneratedKeys();
+        ResultSet rs = ps.getGeneratedKeys();
         Long idChave;
-        if (rsChaveGerada.next()) {
-            idChave = rsChaveGerada.getLong(1);
-        } else {
+        if (!rs.next()) {
             throw new UnsupportedOperationException("Erro ao tentar inserir um novo registro");
-        }
-//Primeira linha
-        return rsChaveGerada.getLong(1);
+        } 
+         atualizarSaldoEstoque(movtoEstoque.getProduto().getIdProduto(), movtoEstoque.getQuantidade());
+         return rs.getLong(1);
+
 
     }
 
