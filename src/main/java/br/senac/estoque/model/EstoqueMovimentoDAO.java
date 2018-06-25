@@ -6,13 +6,21 @@
 package br.senac.estoque.model;
 
 import br.senac.componentes.db.ConexaoDB;
+import br.senac.componentes.db.UtilSQL;
+import static br.senac.componentes.db.UtilSQL.executarQuery;
 import br.senac.grupoproduto.model.BaseDAO;
+import br.senac.produto.model.GrupoProduto;
+import br.senac.produto.model.Mercadoria;
+import br.senac.produto.model.Produto;
+import br.senac.produto.model.TipoProduto;
+import com.mysql.fabric.xmlrpc.base.Data;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -21,9 +29,21 @@ import java.util.List;
  * @author andre
  */
 public class EstoqueMovimentoDAO implements BaseDAO<EstoqueMovimento, Long> {
-
-    EstoqueMovimento estoqueMovimento = new EstoqueMovimento();
-
+    
+    public static void main(String[] args) throws SQLException {
+        EstoqueMovimentoDAO estoqueMovimentodao = new EstoqueMovimentoDAO();
+        Produto produto = new Mercadoria();
+        GrupoProduto grupoProd = new GrupoProduto();
+        
+        grupoProd.setIdGrupoProduto(1);
+        //produto.setNomeProduto("Feijao");
+        produto.setDataCriacao(new Date());
+        produto.setPerclICMS(3.5f);
+        produto.setTipoPruduto(TipoProduto.MERCADORIA);
+        produto.setGrupoProduto(grupoProd);
+        //Long id = estoqueMovimentodao.inserir(produto);
+      }
+        
     /**
      * A partir de um ResultSet passado como parâmetro, cujo cursor está
      * posicionado em alguma linha da tabela estoquemovto, faça o DataBinding
@@ -31,8 +51,20 @@ public class EstoqueMovimentoDAO implements BaseDAO<EstoqueMovimento, Long> {
      *
      * @param rs
      */
-    private EstoqueMovimento getEstoqueMovimento(ResultSet rs) {
-        throw new UnsupportedOperationException("Não implementado ainda!");
+    private EstoqueMovimento getEstoqueMovimento(ResultSet rs) throws SQLException {
+        EstoqueMovimento estoqueMovimento = new EstoqueMovimento();
+        Long idEstoqueMovimento = rs.getLong("idMovtoEstoque");
+
+        estoqueMovimento.setIdMovtoEstoque(idEstoqueMovimento);
+        estoqueMovimento.setQuantidade(rs.getDouble("quantidade"));
+        estoqueMovimento.setTipoMovto(TipoMovimentoEstoque.getTipoPorCodigo(rs.getString("tipoMovto")));
+        estoqueMovimento.setDataMovto(rs.getDate("dataMovto"));
+        //estoqueMovimento.setProduto(rs.getInt("idProduto"));
+        estoqueMovimento.setIdUsuario(rs.getInt("idUsuario"));
+        estoqueMovimento.setObservacoes(rs.getString("observacoes"));
+
+        return estoqueMovimento;
+
     }
 
     /**
@@ -44,7 +76,14 @@ public class EstoqueMovimentoDAO implements BaseDAO<EstoqueMovimento, Long> {
      */
     @Override
     public EstoqueMovimento getPorId(Long idMovtoEstoque) throws SQLException {
-        throw new UnsupportedOperationException("Não implementado ainda!");
+
+        String sql = "SELECT * FROM estoquemovto where idMovtoEstoque = " + idMovtoEstoque;
+        ResultSet rs = UtilSQL.executarQuery(sql);
+
+        if (!rs.next()) {
+            throw new UnsupportedOperationException("Não Erro ao consultar o produto");
+        }
+        return getEstoqueMovimento(rs);
     }
 
     /**
@@ -58,7 +97,26 @@ public class EstoqueMovimentoDAO implements BaseDAO<EstoqueMovimento, Long> {
      * @param idMovtoEstoque
      */
     private void atualizarSaldoEstoque(Long idProduto, Double quantidade) throws SQLException {
-        throw new UnsupportedOperationException("Não implementado ainda!");
+        EstoqueMovimento estoqueMovimento = new EstoqueMovimento();
+                
+        String sql = "select * from estoquemovto where idProduto = " + idProduto;
+        ResultSet rs = UtilSQL.executarQuery(sql);
+
+        if (!rs.next()) {
+            String sqlInsert = "INSERT INTO `projeto`.`estoquesaldo`\n"
+                    + "(`idProduto` ,\n"
+                    + "`saldo`)\n"
+                    + "VALUES\n"
+                    + "(?,\n"
+                    + "?);";
+
+            Connection conn = ConexaoDB.getInstance().getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
+            
+            ps.setObject(1, estoqueMovimento.getProduto().getIdProduto());
+            ps.setObject(2, estoqueMovimento.getQuantidade());
+        }
+
     }
 
     /**
@@ -73,6 +131,7 @@ public class EstoqueMovimentoDAO implements BaseDAO<EstoqueMovimento, Long> {
      */
     @Override
     public Long inserir(EstoqueMovimento movtoEstoque) throws SQLException {
+        EstoqueMovimento estoqueMovimento = new EstoqueMovimento();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String sql = "INSERT INTO `projeto`.`estoquemovto`\n"
                 + "(`idMovtoEstoque`,\n"
@@ -101,13 +160,13 @@ public class EstoqueMovimentoDAO implements BaseDAO<EstoqueMovimento, Long> {
         ps.setObject(6, estoqueMovimento.getObservacoes());
 
         ps.executeUpdate();
-        
+
         ResultSet rsChaveGerada = ps.getGeneratedKeys();
         Long idChave;
-        if(rsChaveGerada.next()){
+        if (rsChaveGerada.next()) {
             idChave = rsChaveGerada.getLong(1);
-        }else{
-           throw new UnsupportedOperationException("Erro ao tentar inserir um novo registro");
+        } else {
+            throw new UnsupportedOperationException("Erro ao tentar inserir um novo registro");
         }
 //Primeira linha
         return rsChaveGerada.getLong(1);
@@ -126,7 +185,19 @@ public class EstoqueMovimentoDAO implements BaseDAO<EstoqueMovimento, Long> {
      */
     @Override
     public boolean excluir(Long idMovtoEstoque) throws SQLException {
-        throw new UnsupportedOperationException("Não implementado ainda!");
+
+        String sql = "DELETE FROM estoquemovto WHERE idMovtoEstoque =" + idMovtoEstoque;
+        Connection conn = ConexaoDB.getInstance().getConnection();
+        try {
+            Statement stm = conn.createStatement();
+            int regAfetados = stm.executeUpdate(sql);
+            return (regAfetados == 1);
+        } catch (Exception e) {
+            conn.rollback();
+            conn.setAutoCommit(true);
+        }
+        return true;
+
     }
 
     /**
@@ -140,10 +211,30 @@ public class EstoqueMovimentoDAO implements BaseDAO<EstoqueMovimento, Long> {
      * dos campos idUsuario e observacoes que podem ou não ser nulos (null).
      *
      * @param movtoEstoque
+     * @return
+     * @throws java.sql.SQLException
      */
     @Override
     public boolean alterar(EstoqueMovimento movtoEstoque) throws SQLException {
-        throw new UnsupportedOperationException("Não implementado ainda!");
+        EstoqueMovimento estoqueMovimento = new EstoqueMovimento();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String sql = "UPDATE `projeto`.`estoquemovto` "
+                + "SET"
+                + "`quantidade` = " + estoqueMovimento.getQuantidade() + ","
+                + "`tipoMovto` = '" + estoqueMovimento.getTipoMovto() + "',"
+                + "`dataMovto` =" + dateFormat.format(estoqueMovimento.getDataMovto()) + ","
+                + "`idProduto` =" + estoqueMovimento.getProduto().getIdProduto() + ","
+                + "`idUsuario` =" + estoqueMovimento.getIdUsuario() + ","
+                + "`observacoes` =" + estoqueMovimento.getObservacoes() + " "
+                + "WHERE `idMovtoEstoque` =" + estoqueMovimento.getIdMovtoEstoque() + ";";
+
+        System.out.println(sql);
+        Connection conn = ConexaoDB.getInstance().getConnection();
+        Statement stm = conn.createStatement();
+        int regAlterados = stm.executeUpdate(sql);
+
+        return (regAlterados == 1);
+
     }
 
     /**
@@ -157,7 +248,17 @@ public class EstoqueMovimentoDAO implements BaseDAO<EstoqueMovimento, Long> {
      * @param idProduto
      */
     public List<EstoqueMovimento> listarPorProduto(Long idProduto, Date dataInicioMovto) throws SQLException {
-        throw new UnsupportedOperationException("Não implementado ainda!");
+        EstoqueMovimento estoqueMovimento = new EstoqueMovimento();
+
+        List<EstoqueMovimento> lista = new ArrayList<>();
+        String sql = "select * from estoquemovto where idMovtoEstoque =" + idProduto + "and dataMovto  <=" + dataInicioMovto + ";";
+
+        ResultSet rs = UtilSQL.executarQuery(sql);
+        while (rs.next()) {
+            estoqueMovimento = getEstoqueMovimento(rs);
+            lista.add(estoqueMovimento);
+        }
+        return lista;
     }
 
 }
