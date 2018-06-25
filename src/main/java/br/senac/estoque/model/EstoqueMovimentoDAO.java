@@ -49,12 +49,13 @@ public class EstoqueMovimentoDAO implements BaseDAO<EstoqueMovimento, Long> {
 
         Long id = estoqueDao.inserir(estoque);
         estoque.setTipoMovto(TipoMovimentoEstoque.ENTRADA);
+ 
         estoque.setIdMovtoEstoque(id);
         estoqueDao.alterar(estoque);
 
-        System.out.println(estoqueDao.getPorId(id));
-        System.out.println(estoqueDao.getPorId(id));
-        System.out.println(estoqueDao.excluir(id));
+       
+
+        
 
     }
 
@@ -199,8 +200,8 @@ public class EstoqueMovimentoDAO implements BaseDAO<EstoqueMovimento, Long> {
         ps.setLong(4, movtoEstoque.getProduto().getIdProduto());
         ps.setLong(5, movtoEstoque.getIdUsuario());
         ps.setString(6, movtoEstoque.getObservacoes());
-        System.out.println(sql);
         ps.executeUpdate();
+        System.out.println(sql);
         ResultSet rs = ps.getGeneratedKeys();
         Long idChave;
         if (!rs.next()) {
