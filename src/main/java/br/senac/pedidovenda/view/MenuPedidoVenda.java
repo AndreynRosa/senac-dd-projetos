@@ -228,6 +228,7 @@ public class MenuPedidoVenda extends javax.swing.JFrame {
         if (fieldValorFrete.getText().trim().endsWith("") && !checkBoxFretGratis.isSelected()) {
             JOptionPane.showMessageDialog(this,
                     "Escolha um valor de frete", "Atenção", JOptionPane.WARNING_MESSAGE);
+            return false;
         }
         return true;
     }
