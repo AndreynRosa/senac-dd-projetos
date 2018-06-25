@@ -190,7 +190,7 @@ public class EstoqueMovimentoDAO implements BaseDAO<EstoqueMovimento, Long> {
                 + "?,\n"
                 + "?,\n"
                 + "?,\n"
-                + "?);";
+                + "?)";
         Connection conn = ConexaoDB.getInstance().getConnection();
         PreparedStatement ps = conn.prepareStatement(sql);
 
