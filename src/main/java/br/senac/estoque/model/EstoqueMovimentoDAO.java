@@ -39,7 +39,7 @@ public class EstoqueMovimentoDAO implements BaseDAO<EstoqueMovimento, Long> {
         Mercadoria mercadoria = new Mercadoria();
 
         estoque.setDataMovto(new Date());
-        estoque.setTipoMovto(TipoMovimentoEstoque.ENTRADA);
+        estoque.setTipoMovto(TipoMovimentoEstoque.SAIDA);
         estoque.setQuantidade(33.0);
 
         mercadoria.setIdMercadoria(7L);
@@ -48,8 +48,8 @@ public class EstoqueMovimentoDAO implements BaseDAO<EstoqueMovimento, Long> {
         estoque.setObservacoes("Vai dar certo pelo amor!!!!");
 
         Long id = estoqueDao.inserir(estoque);
+        estoque.setTipoMovto(TipoMovimentoEstoque.ENTRADA);
         estoque.setIdMovtoEstoque(id);
-        estoque.setTipoMovto(TipoMovimentoEstoque.SAIDA);
         estoqueDao.alterar(estoque);
 
         System.out.println(estoqueDao.getPorId(id));
