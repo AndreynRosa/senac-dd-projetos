@@ -29,21 +29,37 @@ import java.util.List;
  * @author andre
  */
 public class EstoqueMovimentoDAO implements BaseDAO<EstoqueMovimento, Long> {
-    
+
     public static void main(String[] args) throws SQLException {
-        EstoqueMovimentoDAO estoqueMovimentodao = new EstoqueMovimentoDAO();
-        Produto produto = new Mercadoria();
-        GrupoProduto grupoProd = new GrupoProduto();
-        
-        grupoProd.setIdGrupoProduto(1);
-        //produto.setNomeProduto("Feijao");
-        produto.setDataCriacao(new Date());
-        produto.setPerclICMS(3.5f);
-        produto.setTipoPruduto(TipoProduto.MERCADORIA);
-        produto.setGrupoProduto(grupoProd);
-        //Long id = estoqueMovimentodao.inserir(produto);
-      }
-        
+        //SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        EstoqueMovimentoDAO estoqueDao = new EstoqueMovimentoDAO();
+        EstoqueMovimento estoque = new EstoqueMovimento();
+
+        Mercadoria mercadoria = new Mercadoria();
+
+        estoque.setDataMovto(new Date());
+        estoque.setTipoMovto(TipoMovimentoEstoque.ENTRADA);
+        estoque.setQuantidade(33.0);
+
+        mercadoria.setIdMercadoria(10L);
+        estoque.setProduto(mercadoria);
+        estoque.setIdUsuario(10);
+        estoque.setObservacoes("Vai dar certo pelo amor!!!!");
+
+        Long id = estoqueDao.inserir(estoque);
+        estoque.setIdMovtoEstoque(id);
+        estoque.setTipoMovto(TipoMovimentoEstoque.SAIDA);
+        estoqueDao.alterar(estoque);
+
+        System.out.println(estoqueDao.getPorId(id));
+
+        System.out.println(estoqueDao.getPorId(id));
+
+        System.out.println(estoqueDao.excluir(id));
+
+    }
+
     /**
      * A partir de um ResultSet passado como parâmetro, cujo cursor está
      * posicionado em alguma linha da tabela estoquemovto, faça o DataBinding
@@ -98,7 +114,7 @@ public class EstoqueMovimentoDAO implements BaseDAO<EstoqueMovimento, Long> {
      */
     private void atualizarSaldoEstoque(Long idProduto, Double quantidade) throws SQLException {
         EstoqueMovimento estoqueMovimento = new EstoqueMovimento();
-                
+
         String sql = "select * from estoquemovto where idProduto = " + idProduto;
         ResultSet rs = UtilSQL.executarQuery(sql);
 
@@ -112,9 +128,36 @@ public class EstoqueMovimentoDAO implements BaseDAO<EstoqueMovimento, Long> {
 
             Connection conn = ConexaoDB.getInstance().getConnection();
             PreparedStatement ps = conn.prepareStatement(sql);
-            
+
             ps.setObject(1, estoqueMovimento.getProduto().getIdProduto());
             ps.setObject(2, estoqueMovimento.getQuantidade());
+
+            int regAlterados = ps.executeUpdate();
+
+        } else {
+            double saldo = rs.getDouble("saldo");
+            if (saldo >= 0) {
+                String sqlAdd = "UPDATE `projeto`.`estoquesaldo` SET"
+                        + "`saldo` = ?"
+                        + "WHERE `idProduto` = ?;";
+
+                Connection conn = ConexaoDB.getInstance().getConnection();
+                PreparedStatement ps = conn.prepareStatement(sqlAdd);
+
+                ps.setObject(1, (quantidade + saldo));
+                ps.setObject(2, idProduto);
+
+            } else {
+                String sqlSub = "UPDATE `projeto`.`estoquesaldo` SET"
+                        + "`saldo` = " + (quantidade - saldo) + ""
+                        + "WHERE `idProduto` = " + idProduto + ";";
+
+                Connection conn = ConexaoDB.getInstance().getConnection();
+                PreparedStatement ps = conn.prepareStatement(sqlSub);
+
+                ps.setObject(1, (quantidade + saldo));
+                ps.setObject(2, idProduto);
+            }
         }
 
     }
@@ -132,9 +175,8 @@ public class EstoqueMovimentoDAO implements BaseDAO<EstoqueMovimento, Long> {
     @Override
     public Long inserir(EstoqueMovimento movtoEstoque) throws SQLException {
         EstoqueMovimento estoqueMovimento = new EstoqueMovimento();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String sql = "INSERT INTO `projeto`.`estoquemovto`\n"
-                + "(`idMovtoEstoque`,\n"
+                + "("
                 + "`quantidade`,\n"
                 + "`tipoMovto`,\n"
                 + "`dataMovto`,\n"
@@ -152,15 +194,15 @@ public class EstoqueMovimentoDAO implements BaseDAO<EstoqueMovimento, Long> {
         Connection conn = ConexaoDB.getInstance().getConnection();
         PreparedStatement ps = conn.prepareStatement(sql);
 
-        ps.setDouble(1, estoqueMovimento.getQuantidade());
+        ps.setObject(1, estoqueMovimento.getQuantidade());
         ps.setObject(2, estoqueMovimento.getTipoMovto());
         ps.setTimestamp(3, new java.sql.Timestamp(estoqueMovimento.getDataMovto().getTime()));
         ps.setObject(4, estoqueMovimento.getProduto().getIdProduto());
         ps.setObject(5, estoqueMovimento.getIdUsuario());
         ps.setObject(6, estoqueMovimento.getObservacoes());
-
+        System.out.println(sql);
         ps.executeUpdate();
-
+        
         ResultSet rsChaveGerada = ps.getGeneratedKeys();
         Long idChave;
         if (rsChaveGerada.next()) {
@@ -191,7 +233,12 @@ public class EstoqueMovimentoDAO implements BaseDAO<EstoqueMovimento, Long> {
         try {
             Statement stm = conn.createStatement();
             int regAfetados = stm.executeUpdate(sql);
-            return (regAfetados == 1);
+            
+            if (regAfetados != 1){
+                return false;
+            }
+            conn.commit();
+            
         } catch (Exception e) {
             conn.rollback();
             conn.setAutoCommit(true);
@@ -216,6 +263,7 @@ public class EstoqueMovimentoDAO implements BaseDAO<EstoqueMovimento, Long> {
      */
     @Override
     public boolean alterar(EstoqueMovimento movtoEstoque) throws SQLException {
+        
         EstoqueMovimento estoqueMovimento = new EstoqueMovimento();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String sql = "UPDATE `projeto`.`estoquemovto` "
@@ -248,8 +296,9 @@ public class EstoqueMovimentoDAO implements BaseDAO<EstoqueMovimento, Long> {
      * @param idProduto
      */
     public List<EstoqueMovimento> listarPorProduto(Long idProduto, Date dataInicioMovto) throws SQLException {
+        
         EstoqueMovimento estoqueMovimento = new EstoqueMovimento();
-
+        
         List<EstoqueMovimento> lista = new ArrayList<>();
         String sql = "select * from estoquemovto where idMovtoEstoque =" + idProduto + "and dataMovto  <=" + dataInicioMovto + ";";
 
