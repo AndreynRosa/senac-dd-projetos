@@ -37,7 +37,7 @@ public class EstoqueMovimentoDAO implements BaseDAO<EstoqueMovimento, Long> {
         EstoqueMovimento estoque = new EstoqueMovimento();
 
         Produto mercadoria = new Mercadoria();
-
+        Date date = new Date();
         estoque.setIdMovtoEstoque(6L);
         estoque.setProduto(mercadoria);
         estoque.setQuantidade(33.0);
@@ -48,12 +48,16 @@ public class EstoqueMovimentoDAO implements BaseDAO<EstoqueMovimento, Long> {
         estoque.setProduto(mercadoria);
         estoque.setObservacoes("Vai dar certo pelo amor!!!!");
 
-        //Long id = estoqueDao.inserir(estoque);
-        //estoque.setTipoMovto(TipoMovimentoEstoque.ENTRADA);
-
+        Long id = estoqueDao.inserir(estoque);
+        estoque.setTipoMovto(TipoMovimentoEstoque.ENTRADA);
         //estoque.setIdMovtoEstoque(id);
         //estoqueDao.alterar(estoque);
-        estoqueDao.excluir(10L);
+        //estoqueDao.excluir(10L);
+        //for (EstoqueMovimento estoq : estoqueDao.listarPorProduto(9L, date)) {
+         //   System.out.println("O id movimento é:"+estoq.getIdMovtoEstoque());
+        //}
+        
+        
 
     }
 
@@ -175,7 +179,7 @@ public class EstoqueMovimentoDAO implements BaseDAO<EstoqueMovimento, Long> {
     public Long inserir(EstoqueMovimento movtoEstoque) throws SQLException {
         //Produto prod = new Mercadoria();
         //prod.setIdProduto(7L);
-        
+
         String sql = "INSERT INTO `projeto`.`estoquemovto`"
                 + "(`quantidade`, `tipoMovto`,"
                 + "`dataMovto`, `idProduto`, `idUsuario`, `observacoes`) "
@@ -269,7 +273,6 @@ public class EstoqueMovimentoDAO implements BaseDAO<EstoqueMovimento, Long> {
         }
         return false;
 
-
     }
 
     /**
@@ -281,20 +284,25 @@ public class EstoqueMovimentoDAO implements BaseDAO<EstoqueMovimento, Long> {
      * seja maior ou igual a dataInicioMovto.
      *
      * @param idProduto
+     * @param dataInicioMovto
+     * @return
+     * @throws java.sql.SQLException
      */
     public List<EstoqueMovimento> listarPorProduto(Long idProduto, Date dataInicioMovto) throws SQLException {
 
-        EstoqueMovimento estoqueMovimento = new EstoqueMovimento();
-
-        List<EstoqueMovimento> lista = new ArrayList<>();
-        String sql = "select * from estoquemovto where idMovtoEstoque =" + idProduto + "and dataMovto  <=" + dataInicioMovto + ";";
-
-        ResultSet rs = UtilSQL.executarQuery(sql);
+      ArrayList<EstoqueMovimento> estoque = new ArrayList<>();;
+        Connection conn = ConexaoDB.getInstance().getConnection();
+        String sql = "SELECT * FROM estoquemovto WHERE idProduto = ? AND dataMovto >= ? ";
+        
+        PreparedStatement stm = conn.prepareStatement(sql);
+        stm.setLong(1, idProduto);
+        stm.setDate(2, new java.sql.Date(dataInicioMovto.getTime()));
+        ResultSet rs = stm.executeQuery();
         while (rs.next()) {
-            estoqueMovimento = getEstoqueMovimento(rs);
-            lista.add(estoqueMovimento);
+            estoque.add(getEstoqueMovimento(rs));
         }
-        return lista;
+        return estoque;
+
     }
 
 }
