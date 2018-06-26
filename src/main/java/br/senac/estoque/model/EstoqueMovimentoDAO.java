@@ -48,11 +48,12 @@ public class EstoqueMovimentoDAO implements BaseDAO<EstoqueMovimento, Long> {
         estoque.setProduto(mercadoria);
         estoque.setObservacoes("Vai dar certo pelo amor!!!!");
 
-        Long id = estoqueDao.inserir(estoque);
-        estoque.setTipoMovto(TipoMovimentoEstoque.ENTRADA);
+        //Long id = estoqueDao.inserir(estoque);
+        //estoque.setTipoMovto(TipoMovimentoEstoque.ENTRADA);
 
-        estoque.setIdMovtoEstoque(id);
+        //estoque.setIdMovtoEstoque(id);
         //estoqueDao.alterar(estoque);
+        estoqueDao.excluir(10L);
 
     }
 
@@ -209,6 +210,7 @@ public class EstoqueMovimentoDAO implements BaseDAO<EstoqueMovimento, Long> {
      *
      * @param idMovtoEstoque
      * @return
+     * @throws java.sql.SQLException
      */
     @Override
     public boolean excluir(Long idMovtoEstoque) throws SQLException {
@@ -224,7 +226,7 @@ public class EstoqueMovimentoDAO implements BaseDAO<EstoqueMovimento, Long> {
             }
             conn.commit();
 
-        } catch (Exception e) {
+        } catch (SQLException e) {
             conn.rollback();
             conn.setAutoCommit(true);
         }
