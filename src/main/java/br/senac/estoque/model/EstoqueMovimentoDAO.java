@@ -173,23 +173,20 @@ public class EstoqueMovimentoDAO implements BaseDAO<EstoqueMovimento, Long> {
     public Long inserir(EstoqueMovimento movtoEstoque) throws SQLException {
 
         String sql = "INSERT INTO `projeto`.`estoquemovto`"
-                + "(`idMovtoEstoque`, `quantidade`, `tipoMovto`,"
+                + "(`quantidade`, `tipoMovto`,"
                 + "`dataMovto`, `idProduto`, `idUsuario`, `observacoes`) "
-                + "VALUES (?,?,?,?,?,?,?);";
+                + "VALUES (?,?,?,?,?,?);";
         Connection conn = ConexaoDB.getInstance().getConnection();
         PreparedStatement ps = conn.prepareStatement(sql);
 
         ps.setDouble(1, movtoEstoque.getQuantidade());
         ps.setString(2, movtoEstoque.getTipoMovto().getCodigo().toString());
         ps.setTimestamp(3, new java.sql.Timestamp(movtoEstoque.getDataMovto().getTime()));
-        ps.setLong(4, movtoEstoque.getProduto().getIdProduto());
+        ps.setObject(4, movtoEstoque.getProduto().getIdProduto());
         ps.setInt(5, movtoEstoque.getIdUsuario());
         ps.setString(6, movtoEstoque.getObservacoes());
-
-        System.out.println(ps.executeUpdate());
-
         ps.executeUpdate();
-
+        
         ResultSet rs = ps.getGeneratedKeys();
         Long idChave;
         if (!rs.next()) {
