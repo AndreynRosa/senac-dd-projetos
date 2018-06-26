@@ -182,7 +182,7 @@ public class EstoqueMovimentoDAO implements BaseDAO<EstoqueMovimento, Long> {
         ps.setDouble(1, movtoEstoque.getQuantidade());
         ps.setString(2, movtoEstoque.getTipoMovto().getCodigo().toString());
         ps.setTimestamp(3, new java.sql.Timestamp(movtoEstoque.getDataMovto().getTime()));
-        ps.setObject(4, movtoEstoque.getProduto().getIdProduto());
+        ps.setLong(4, movtoEstoque.getProduto().getIdProduto());
         ps.setInt(5, movtoEstoque.getIdUsuario());
         ps.setString(6, movtoEstoque.getObservacoes());
         ps.executeUpdate();
