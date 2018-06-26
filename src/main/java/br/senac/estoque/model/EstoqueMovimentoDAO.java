@@ -36,14 +36,15 @@ public class EstoqueMovimentoDAO implements BaseDAO<EstoqueMovimento, Long> {
         EstoqueMovimentoDAO estoqueDao = new EstoqueMovimentoDAO();
         EstoqueMovimento estoque = new EstoqueMovimento();
 
-        Mercadoria mercadoria = new Mercadoria();
+        Produto mercadoria = new Mercadoria();
 
+        estoque.setIdMovtoEstoque(6L);
         estoque.setProduto(mercadoria);
         estoque.setQuantidade(33.0);
         estoque.setTipoMovto(TipoMovimentoEstoque.SAIDA);
         estoque.setDataMovto(new Date());
-        mercadoria.setIdMercadoria(7L);
-        estoque.setIdUsuario(10);
+        mercadoria.setIdProduto(10L);
+        estoque.setIdUsuario(6);
         estoque.setProduto(mercadoria);
         estoque.setObservacoes("Vai dar certo pelo amor!!!!");
 
@@ -51,7 +52,7 @@ public class EstoqueMovimentoDAO implements BaseDAO<EstoqueMovimento, Long> {
         estoque.setTipoMovto(TipoMovimentoEstoque.ENTRADA);
 
         estoque.setIdMovtoEstoque(id);
-        estoqueDao.alterar(estoque);
+        //estoqueDao.alterar(estoque);
 
     }
 
@@ -171,13 +172,15 @@ public class EstoqueMovimentoDAO implements BaseDAO<EstoqueMovimento, Long> {
      */
     @Override
     public Long inserir(EstoqueMovimento movtoEstoque) throws SQLException {
-
+        //Produto prod = new Mercadoria();
+        //prod.setIdProduto(7L);
+        
         String sql = "INSERT INTO `projeto`.`estoquemovto`"
                 + "(`quantidade`, `tipoMovto`,"
                 + "`dataMovto`, `idProduto`, `idUsuario`, `observacoes`) "
                 + "VALUES (?,?,?,?,?,?);";
         Connection conn = ConexaoDB.getInstance().getConnection();
-        PreparedStatement ps = conn.prepareStatement(sql);
+        PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
         ps.setDouble(1, movtoEstoque.getQuantidade());
         ps.setString(2, movtoEstoque.getTipoMovto().getCodigo().toString());
@@ -186,13 +189,13 @@ public class EstoqueMovimentoDAO implements BaseDAO<EstoqueMovimento, Long> {
         ps.setInt(5, movtoEstoque.getIdUsuario());
         ps.setString(6, movtoEstoque.getObservacoes());
         ps.executeUpdate();
-        
+
         ResultSet rs = ps.getGeneratedKeys();
         Long idChave;
         if (!rs.next()) {
             throw new UnsupportedOperationException("Erro ao tentar inserir um novo registro");
         }
-        atualizarSaldoEstoque(movtoEstoque.getProduto().getIdProduto(), movtoEstoque.getQuantidade());
+//        atualizarSaldoEstoque(movtoEstoque.getProduto().getIdProduto(), movtoEstoque.getQuantidade());
         return rs.getLong(1);
 
     }
@@ -246,24 +249,24 @@ public class EstoqueMovimentoDAO implements BaseDAO<EstoqueMovimento, Long> {
     @Override
     public boolean alterar(EstoqueMovimento movtoEstoque) throws SQLException {
 
-        EstoqueMovimento estoqueMovimento = new EstoqueMovimento();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String sql = "UPDATE `projeto`.`estoquemovto` "
-                + "SET"
-                + "`quantidade` = " + estoqueMovimento.getQuantidade() + ","
-                + "`tipoMovto` = '" + estoqueMovimento.getTipoMovto() + "',"
-                + "`dataMovto` =" + dateFormat.format(estoqueMovimento.getDataMovto()) + ","
-                + "`idProduto` =" + estoqueMovimento.getProduto().getIdProduto() + ","
-                + "`idUsuario` =" + estoqueMovimento.getIdUsuario() + ","
-                + "`observacoes` =" + estoqueMovimento.getObservacoes() + " "
-                + "WHERE `idMovtoEstoque` =" + estoqueMovimento.getIdMovtoEstoque() + ";";
-
-        System.out.println(sql);
+        //SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Connection conn = ConexaoDB.getInstance().getConnection();
-        Statement stm = conn.createStatement();
-        int regAlterados = stm.executeUpdate(sql);
+        String sql = "UPDATE estoquemovto SET quantidade = ? , tipoMovto = ? ,dataMovto = ? , idProduto = ?, idUsuario = ?, observacoes = ? WHERE idMovtoEstoque = ?";
+        PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+        ps.setDouble(1, movtoEstoque.getQuantidade());
+        ps.setString(2, movtoEstoque.getTipoMovto().getCodigo().toString());
+        ps.setTimestamp(3, new java.sql.Timestamp(movtoEstoque.getDataMovto().getTime()));
+        ps.setLong(4, movtoEstoque.getProduto().getIdProduto());
+        ps.setLong(5, movtoEstoque.getIdUsuario());
+        ps.setString(6, movtoEstoque.getObservacoes());
+        ps.setLong(7, movtoEstoque.getIdMovtoEstoque());
+        ps.executeUpdate();
+        ResultSet rs = ps.getGeneratedKeys();
+        if (rs.next()) {
+            return true;
+        }
+        return false;
 
-        return (regAlterados == 1);
 
     }
 
