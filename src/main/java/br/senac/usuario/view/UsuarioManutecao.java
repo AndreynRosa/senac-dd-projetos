@@ -5,19 +5,68 @@
  */
 package br.senac.usuario.view;
 
+import br.senac.usuario.model.Usuario;
+import br.senac.usuario.model.UsuarioDAO;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author andre
  */
-public class Usuario extends javax.swing.JFrame {
+public class UsuarioManutecao extends javax.swing.JFrame {
 
+    private UsuarioDAO dao = new UsuarioDAO();
+    private Usuario usuario;
     /**
      * Creates new form Usuario
      */
-    public Usuario() {
+    public UsuarioManutecao() {
         initComponents();
+        buscar();
     }
+    public void buscar(){
+        try {
+            DefaultTableModel model = (DefaultTableModel) tbUsuario.getModel();
+            model.setRowCount(0);
+            List<Usuario> lista = dao.listarTodos();
+            for(Usuario usuario: lista){
+             Object[] dados = new Object[4];
+             dados[0] = usuario.getIdUsuario();
+             dados[1] = usuario.getLogin();
+             dados[2] = usuario.getGrupoUsuario().getNome();
+             dados[3] = usuario.getDataExpiraacao();
+             model.addRow(dados);
+                   
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(UsuarioManutecao.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+    }
+    public void dataBildingTable(){
+       tbUsuario.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            public void valueChanged(ListSelectionEvent event) {
+                if (tbUsuario.getSelectedRow() != -1) {
+                    try {
+                        Integer id = (Integer) tbUsuario.getValueAt(tbUsuario.getSelectedRow(), 0);
+                        usuario = dao.getPorId(id);
+                        
+                        txtSenha.setText(usuario.getLogin());
+                    } catch (SQLException ex) {
+                        Logger.getLogger(UsuarioManutecao.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                
+                }
+            }
+        });
 
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -40,10 +89,10 @@ public class Usuario extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         txtLogin = new javax.swing.JTextField();
         txtSenha = new javax.swing.JTextField();
-        txtGrupoAcesso = new javax.swing.JTextField();
         txtData = new javax.swing.JFormattedTextField();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTable2 = new javax.swing.JTable();
+        tbUsuario = new javax.swing.JTable();
+        comoBoxGrupAcess = new javax.swing.JComboBox<>();
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -88,13 +137,14 @@ public class Usuario extends javax.swing.JFrame {
 
         jLabel4.setText("Data de Expiração");
 
+        txtData.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.DateFormatter()));
         txtData.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtDataActionPerformed(evt);
             }
         });
 
-        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+        tbUsuario.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -105,7 +155,9 @@ public class Usuario extends javax.swing.JFrame {
                 "Codigo", "Login", "Grupo", "Data Expiração"
             }
         ));
-        jScrollPane2.setViewportView(jTable2);
+        jScrollPane2.setViewportView(tbUsuario);
+
+        comoBoxGrupAcess.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -119,13 +171,13 @@ public class Usuario extends javax.swing.JFrame {
                     .addComponent(jLabel1))
                 .addGap(28, 28, 28)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtLogin)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtGrupoAcesso)
                             .addComponent(txtSenha, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(txtData, javax.swing.GroupLayout.Alignment.TRAILING))
-                        .addContainerGap())
-                    .addComponent(txtLogin)))
+                            .addComponent(txtData, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(comoBoxGrupAcess, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addContainerGap())))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 393, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -145,7 +197,7 @@ public class Usuario extends javax.swing.JFrame {
                 .addGap(23, 23, 23)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(txtGrupoAcesso, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(comoBoxGrupAcess, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(29, 29, 29)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
@@ -202,20 +254,21 @@ public class Usuario extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Usuario.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(UsuarioManutecao.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Usuario.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(UsuarioManutecao.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Usuario.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(UsuarioManutecao.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Usuario.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(UsuarioManutecao.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Usuario().setVisible(true);
+                new UsuarioManutecao().setVisible(true);
             }
         });
     }
@@ -224,6 +277,7 @@ public class Usuario extends javax.swing.JFrame {
     private javax.swing.JToggleButton btnAlterar;
     private javax.swing.JToggleButton btnExcluir;
     private javax.swing.JToggleButton btnIncluir;
+    private javax.swing.JComboBox<String> comoBoxGrupAcess;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -232,10 +286,9 @@ public class Usuario extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTable1;
-    private javax.swing.JTable jTable2;
     private javax.swing.JToolBar jToolBar1;
+    private javax.swing.JTable tbUsuario;
     private javax.swing.JFormattedTextField txtData;
-    private javax.swing.JTextField txtGrupoAcesso;
     private javax.swing.JTextField txtLogin;
     private javax.swing.JTextField txtSenha;
     // End of variables declaration//GEN-END:variables

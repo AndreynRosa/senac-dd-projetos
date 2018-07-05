@@ -14,7 +14,7 @@ public class Usuario {
     private String login;
     private String senha;
     private Date dataExpiraacao;
-    private GrupoUsuario grupoProd;
+    private GrupoUsuario grupoUsuario;
 
     public Usuario() {
     }
@@ -47,16 +47,16 @@ public class Usuario {
         return dataExpiraacao;
     }
 
-    public void setDataExpiraacao(Date dataExpiraacao) {
+    public void setDataExpiracao(Date dataExpiraacao) {
         this.dataExpiraacao = dataExpiraacao;
     }
 
-    public GrupoUsuario getGrupoProd() {
-        return grupoProd;
+    public GrupoUsuario getGrupoUsuario() {
+        return grupoUsuario;
     }
 
-    public void setGrupoProd(GrupoUsuario grupoProd) {
-        this.grupoProd = grupoProd;
+    public void setGrupoUsuario(GrupoUsuario grupoUso) {
+        this.grupoUsuario = grupoUso;
     }
     
 }
