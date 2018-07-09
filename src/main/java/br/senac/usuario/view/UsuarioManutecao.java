@@ -58,6 +58,7 @@ public class UsuarioManutecao extends javax.swing.JFrame {
                         usuario = dao.getPorId(id);
                         
                         txtSenha.setText(usuario.getLogin());
+                       
                     } catch (SQLException ex) {
                         Logger.getLogger(UsuarioManutecao.class.getName()).log(Level.SEVERE, null, ex);
                     }
