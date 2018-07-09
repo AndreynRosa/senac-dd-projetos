@@ -8,6 +8,8 @@ package br.senac.carro.view;
 import br.senac.carro.model.Carro;
 import br.senac.carro.model.CarroDAO;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -38,11 +40,11 @@ public class CarroManutecao extends javax.swing.JFrame {
 
                         txtNome.setText(carro.getNmCarro());
                         txtData.setValue(carro.getDtLancamento());
-                        if (carro.getTpCambio() == "AUTOMATICO") {
+                        if (carro.getTpCambio().equals("AUTOMATICO")) {
                             checkAutomatico.setSelected(true);
-                        } else if (carro.getTpCambio() == "MANUAL") {
+                        } else if (carro.getTpCambio().equals("MANUAL")) {
                             checkManual.setSelected(true);
-                        } else if (carro.getTpCambio() == "AMBOS") {
+                        } else if (carro.getTpCambio().equals("AMBOS")) {
                             checkAmbos.setSelected(true);
                         }
                     } catch (SQLException ex) {
@@ -71,6 +73,30 @@ public class CarroManutecao extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Erro: " + ex.getMessage());
         }
     }
+    
+    
+    private void limpar(){
+        carro = null;
+        txtNome.setText("");
+        txtData.setValue(null);
+        checkAmbos.setSelected(false);
+        checkAutomatico.setSelected(false);
+        checkManual.setSelected(false);
+        checkSAiu.setSelected(false);
+    }
+    private void config(boolean edicao){
+       btnAlterar.setVisible(!edicao);
+       btnInserir.setVisible(!edicao);
+       btnExcluir.setVisible(!edicao);
+       
+       btnGravar.setVisible(edicao);
+       btnFechar.setVisible(edicao);
+       
+       txtData.setEditable(edicao);
+       txtNome.setEditable(edicao);
+        
+    }
+  
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -88,6 +114,7 @@ public class CarroManutecao extends javax.swing.JFrame {
         btnAlterar = new javax.swing.JButton();
         btnExcluir = new javax.swing.JButton();
         filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
+        btnGravar = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
@@ -99,7 +126,7 @@ public class CarroManutecao extends javax.swing.JFrame {
         checkManual = new javax.swing.JCheckBox();
         checkAmbos = new javax.swing.JCheckBox();
         txtData = new javax.swing.JFormattedTextField();
-        jCheckBox1 = new javax.swing.JCheckBox();
+        checkSAiu = new javax.swing.JCheckBox();
         jPanel4 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tbCarros = new javax.swing.JTable();
@@ -118,14 +145,35 @@ public class CarroManutecao extends javax.swing.JFrame {
         btnAlterar.setFocusable(false);
         btnAlterar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnAlterar.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnAlterar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAlterarActionPerformed(evt);
+            }
+        });
         btnFechar.add(btnAlterar);
 
         btnExcluir.setText("Excluir");
         btnExcluir.setFocusable(false);
         btnExcluir.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnExcluir.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnExcluir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnExcluirActionPerformed(evt);
+            }
+        });
         btnFechar.add(btnExcluir);
         btnFechar.add(filler1);
+
+        btnGravar.setText("Gravar");
+        btnGravar.setFocusable(false);
+        btnGravar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnGravar.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnGravar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGravarActionPerformed(evt);
+            }
+        });
+        btnFechar.add(btnGravar);
 
         jButton4.setText("Fechar");
         jButton4.setFocusable(false);
@@ -196,6 +244,7 @@ public class CarroManutecao extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        txtData.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.DateFormatter()));
         txtData.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtDataActionPerformed(evt);
@@ -233,10 +282,10 @@ public class CarroManutecao extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jCheckBox1.setText("Saiu de Linha");
-        jCheckBox1.addActionListener(new java.awt.event.ActionListener() {
+        checkSAiu.setText("Saiu de Linha");
+        checkSAiu.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jCheckBox1ActionPerformed(evt);
+                checkSAiuActionPerformed(evt);
             }
         });
 
@@ -271,7 +320,7 @@ public class CarroManutecao extends javax.swing.JFrame {
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addGap(34, 34, 34)
-                .addComponent(jCheckBox1)
+                .addComponent(checkSAiu)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -287,7 +336,7 @@ public class CarroManutecao extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jCheckBox1)
+                .addComponent(checkSAiu)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -305,13 +354,79 @@ public class CarroManutecao extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_checkAmbosActionPerformed
 
-    private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
+    private void checkSAiuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkSAiuActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jCheckBox1ActionPerformed
+    }//GEN-LAST:event_checkSAiuActionPerformed
 
     private void txtDataActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtDataActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtDataActionPerformed
+
+    private void btnGravarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGravarActionPerformed
+        
+        try {
+            txtData.commitEdit();
+        } catch (ParseException ex) {
+            JOptionPane.showMessageDialog(this, "data expiração inválida");
+        }
+        
+        if (carro == null) {
+            carro = new Carro();
+        }
+        carro.setNmCarro(txtNome.getText());
+        
+        carro.setDtLancamento((Date)txtData.getValue());
+        System.out.println(carro.getDtLancamento());
+        if (checkAutomatico.isSelected()) {
+           carro.setTpCambio("AUTOMATICO");
+        } else if (checkManual.isSelected()){
+            carro.setTpCambio("MANUAL");
+        } else if (checkAmbos.isSelected()) {
+            carro.setTpCambio("AMBOS");
+        }
+       
+        
+        if(checkSAiu.isSelected()){
+            carro.setFlSaiuLinha(true);  
+        }else{
+           carro.setFlSaiuLinha(false); 
+        }   
+         try {
+            if (carro.getIdCarro()== null) {
+                dao.inserir(carro);
+            } else {
+                dao.alterar(carro);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(CarroManutecao.class.getName()).log(Level.SEVERE, null, ex);
+        }
+       buscar();
+    }//GEN-LAST:event_btnGravarActionPerformed
+
+    private void btnAlterarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAlterarActionPerformed
+        config(true);
+    }//GEN-LAST:event_btnAlterarActionPerformed
+
+    private void btnExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirActionPerformed
+         if (tbCarros.getSelectedRow() != -1) {
+            try {
+                int retorno = JOptionPane.showConfirmDialog(this, 
+                    "Confirma exclusão?", 
+                    "Exclusão", JOptionPane.YES_NO_OPTION);
+                if(retorno != JOptionPane.YES_OPTION)
+                    return;
+                
+                Integer id = (Integer) tbCarros.getValueAt(tbCarros.getSelectedRow(), 0);
+                dao.excluir(id);
+                buscar();
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(this, "Erro: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+                Logger.getLogger(CarroManutecao.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }else {
+            JOptionPane.showMessageDialog(this, "Nenhum registro selecionado!", "Erro", JOptionPane.ERROR_MESSAGE);
+        }    
+    }//GEN-LAST:event_btnExcluirActionPerformed
 
     /**
      * @param args the command line arguments
@@ -352,14 +467,15 @@ public class CarroManutecao extends javax.swing.JFrame {
     private javax.swing.JButton btnAlterar;
     private javax.swing.JButton btnExcluir;
     private javax.swing.JToolBar btnFechar;
+    private javax.swing.JButton btnGravar;
     private javax.swing.JButton btnInserir;
     private javax.swing.JCheckBox checkAmbos;
     private javax.swing.JCheckBox checkAutomatico;
     private javax.swing.JCheckBox checkManual;
+    private javax.swing.JCheckBox checkSAiu;
     private javax.swing.Box.Filler filler1;
     private javax.swing.ButtonGroup grupBtnCambio;
     private javax.swing.JButton jButton4;
-    private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
